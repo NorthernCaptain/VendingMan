@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <PreferenceCategory
+        android:title="@string/pref_sync_category">
+
+        <CheckBoxPreference
+            android:key="useServerSync"
+            android:defaultValue="true"
+            android:title="@string/pref_server_sync_title"
+            android:summary="@string/pref_use_server_sync_det" />
+
+        <EditTextPreference
+            android:key="userName"
+            android:defaultValue="me"
+            android:dependency="useServerSync"
+            android:title="@string/pref_user_name_title"
+            android:summary="@string/pref_user_name_det"
+            android:dialogTitle="@string/your_name_title" />
+        <EditTextPreference
+            android:key="syncGroupPin"
+            android:defaultValue="1234"
+            android:dependency="useServerSync"
+            android:title="@string/pref_sync_pin_title"
+            android:summary="@string/pref_sync_pin_det"
+            android:dialogTitle="@string/pref_sync_pin_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_noti_category">
+        <CheckBoxPreference
+            android:key="useNoti"
+            android:defaultValue="true"
+            android:title="@string/pref_use_noti_title"
+            android:summary="@string/pref_use_noti_det" />
+        <CheckBoxPreference
+            android:key="useNotiSound"
+            android:defaultValue="true"
+            android:dependency="useNoti"
+            android:title="@string/pref_use_noti_sound_title"
+            android:summary="@string/pref_use_noti_sound_det" />
+        <CheckBoxPreference
+            android:key="useNotiVibro"
+            android:defaultValue="true"
+            android:dependency="useNoti"
+            android:title="@string/pref_use_noti_vibro_title"
+            android:summary="@string/pref_use_noti_vibro_det" />
+    </PreferenceCategory>
+</PreferenceScreen>

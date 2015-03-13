@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="material_500">#FF5722</color>
+    <color name="material_700">#E64A19</color>
+    <color name="material_A200">#2e4262</color>
+    <color name="material_A100">#3D5AFE</color>
+    <color name="bgGray">#b7b7b7</color>
+    <color name="bgGrayTrans">#dcb7b7b7</color>
+    <color name="bgDarkGray">#979797</color>
+    <color name="bgDarkGrayTrans">#e9979797</color>
+</resources>
