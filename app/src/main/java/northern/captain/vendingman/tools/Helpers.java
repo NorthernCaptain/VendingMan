@@ -40,8 +40,39 @@ public class Helpers
         return String.valueOf(((double)amount) / MULTIPLIER);
     }
 
+    public static final String deltaHoursMins(long deltaMillis)
+    {
+        deltaMillis /= 60000L;
+        int min = (int)deltaMillis % 60;
+        int hour = (int)deltaMillis / 60;
+
+        return String.format("%02d:%02d", hour, min);
+    }
+
+    public static final String smartDateTimeString(Date date)
+    {
+        if (date == null) return "----";
+        long now = System.currentTimeMillis() / MILLIS_PER_DAY;
+        long yesterday = now - 1;
+        long thatDay = date.getTime() / MILLIS_PER_DAY;
+
+        if(now == thatDay)
+        {
+            return AndroidContext.mainActivity.today  + " " + AndroidContext.timeFormat.format(date);
+        }
+
+        if(yesterday == thatDay)
+        {
+            return AndroidContext.mainActivity.yesterday + " " + AndroidContext.timeFormat.format(date);
+        }
+
+        return AndroidContext.dateTimeFormat.format(date);
+    }
+
     public static final String smartDateString(Date date)
     {
+        if(date == null) return "----";
+
         long now = System.currentTimeMillis() / MILLIS_PER_DAY;
         long yesterday = now - 1;
         long thatDay = date.getTime() / MILLIS_PER_DAY;

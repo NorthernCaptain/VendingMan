@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mmitem_main_lay"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/mmitem_name"
+            android:text="Хозяйственные товары"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/abc_primary_text_material_light"
+            android:textStyle="bold"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="marquee"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="2dp"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="Long description of the item"
+            android:id="@+id/mmitem_description"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/abc_secondary_text_material_light"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:text="@string/maintenance_date_cap"
+                android:id="@+id/mmitem_lab1"
+                android:layout_marginBottom="3dp"
+                android:textColor="@color/md_blue_600"
+                android:ellipsize="marquee"
+                android:singleLine="false"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:textSize="12sp"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:text="12 Mar 2014 13:43"
+                android:id="@+id/mmitem_maintenance_date"
+                android:layout_marginBottom="3dp"
+                android:textColor="@color/md_blue_600"
+                android:ellipsize="marquee"
+                android:singleLine="false"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:textSize="12sp"
+                android:gravity="right"/>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="@string/accounting_date_cap"
+            android:id="@+id/mmitem_lab2"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="12 Mar 2014 13:43"
+            android:id="@+id/mmitem_accounting_date"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"
+            android:gravity="right"/>
+    </LinearLayout>
+</LinearLayout>

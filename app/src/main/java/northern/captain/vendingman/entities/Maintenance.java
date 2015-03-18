@@ -12,6 +12,9 @@ import java.util.Date;
 @DatabaseTable(tableName = "maintenance")
 public class Maintenance implements IEntity
 {
+    public static final String STATUS_OPEN = "op";
+    public static final String STATUS_DONE = "do";
+
     @DatabaseField(generatedId = true)
     public int id;
 

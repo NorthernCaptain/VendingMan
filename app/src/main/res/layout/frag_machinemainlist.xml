@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:addon="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+    >
+    <org.lucasr.twowayview.widget.TwoWayView
+        android:id="@+id/fmachinemain_rview"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/TwoWayView"
+        addon:twowayview_layoutManager="ListLayoutManager"
+        />
+
+</FrameLayout>

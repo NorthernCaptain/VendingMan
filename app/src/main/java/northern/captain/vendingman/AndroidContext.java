@@ -16,6 +16,7 @@ public class AndroidContext
     public static DateFormat timeFormat = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
     public static DateFormat monthFormat = new SimpleDateFormat("MMM");
     public static DateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS"); //2014-11-01 00:00:00.000000
+    public static DateFormat dateTimeFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.SHORT);
 
     public static int colorMoneyPlus;
     public static int colorMoneyMinus;

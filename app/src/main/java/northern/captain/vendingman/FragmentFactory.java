@@ -7,8 +7,13 @@ import northern.captain.vendingman.dialogs.GoodsEditDialog;
 import northern.captain.vendingman.dialogs.GoodsEditDialog_;
 import northern.captain.vendingman.dialogs.MachineEditDialog;
 import northern.captain.vendingman.dialogs.MachineEditDialog_;
+import northern.captain.vendingman.entities.VendingMachine;
 import northern.captain.vendingman.fragments.GoodsListFragment_;
 import northern.captain.vendingman.fragments.MachineListFragment_;
+import northern.captain.vendingman.fragments.MachineMaintenanceListFragment;
+import northern.captain.vendingman.fragments.MachineMaintenanceListFragment_;
+import northern.captain.vendingman.fragments.MachineOverviewFragment;
+import northern.captain.vendingman.fragments.MachineOverviewFragment_;
 import northern.captain.vendingman.fragments.PrefFragment;
 
 /**
@@ -33,6 +38,19 @@ public class FragmentFactory
         switch(sectionNumber)
         {
             case 1:
+            {
+                MachineMaintenanceListFragment mfrag = new MachineMaintenanceListFragment_();
+                mfrag.setCallback(new MachineMaintenanceListFragment.VendingChosenCallback()
+                {
+                    @Override
+                    public void machineChosen(VendingMachine machine)
+                    {
+                        AndroidContext.mainActivity.openMachine(machine);
+                    }
+                });
+                fragment = mfrag;
+            }
+                break;
             case 2:
                 fragment = new GoodsListFragment_();
                 break;
@@ -63,4 +81,6 @@ public class FragmentFactory
     {
         return new MachineEditDialog_();
     }
+
+    public MachineOverviewFragment newMachineOverviewFrag() { return new MachineOverviewFragment_();}
 }

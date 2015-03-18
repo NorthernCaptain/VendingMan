@@ -84,5 +84,16 @@
     <string name="goods_new_title">New Goods</string>
     <string name="machine_edit_title">Edit Vending machine</string>
     <string name="machine_new_title">New Vending machine</string>
-
+    <string name="maintenance_date_cap">Maintenance date:</string>
+    <string name="accounting_date_cap">Accounting date:</string>
+    <string name="machine_cap">Vending machine</string>
+    <string name="maintenance_cap">Maintenance</string>
+    <string name="accounting_cap">Accounting</string>
+    <string name="status_cap">Status:</string>
+    <string name="replenished_qty_cap">Replenished qty:</string>
+    <string name="now_label">now</string>
+    <string name="status_opened">Processing</string>
+    <string name="status_done">Done</string>
+    <string name="maintenance_started_toast">New maintenance has just been started</string>
+    <string name="duration_cap">Duration (HH:MM):</string>
 </resources>

@@ -196,6 +196,7 @@ public class SQLManager
         userDao = null;
         machineDao = null;
         goodsDao = null;
+        maintenanceDao = null;
     }
 
     public void resume()
@@ -283,6 +284,23 @@ public class SQLManager
             }
         }
         return machineDao;
+    }
+
+    private Dao<Maintenance, Integer> maintenanceDao;
+
+    public Dao<Maintenance, Integer> getMaintenanceDao()
+    {
+        if(maintenanceDao == null)
+        {
+            try
+            {
+                maintenanceDao = helper.getDao(Maintenance.class);
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return maintenanceDao;
     }
 
     private Dao<Stakeholder, Integer> stakeDao;
