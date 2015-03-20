@@ -14,6 +14,8 @@ import northern.captain.vendingman.fragments.MachineMaintenanceListFragment;
 import northern.captain.vendingman.fragments.MachineMaintenanceListFragment_;
 import northern.captain.vendingman.fragments.MachineOverviewFragment;
 import northern.captain.vendingman.fragments.MachineOverviewFragment_;
+import northern.captain.vendingman.fragments.MaintenanceFragment;
+import northern.captain.vendingman.fragments.MaintenanceFragment_;
 import northern.captain.vendingman.fragments.PrefFragment;
 
 /**
@@ -83,4 +85,6 @@ public class FragmentFactory
     }
 
     public MachineOverviewFragment newMachineOverviewFrag() { return new MachineOverviewFragment_();}
+
+    public MaintenanceFragment newMaintenanceFragment() { return new MaintenanceFragment_();}
 }

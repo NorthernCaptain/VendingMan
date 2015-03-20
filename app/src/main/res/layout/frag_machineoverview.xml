@@ -15,7 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/md_teal_50">
+        android:background="@color/md_yellow_100">
         <TextView
             android:text="@string/machine_cap"
             android:textAppearance="?android:attr/textAppearanceListItem"
@@ -32,7 +32,7 @@
             android:gravity="center"/>
         <TextView
             android:id="@+id/machinecard_name"
-            android:text="Хозяйственные товары"
+            android:text="Machine One"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,6 +61,15 @@
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <android.support.v7.widget.CardView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -70,7 +79,8 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/machinecard_maint_lay">
             <TextView
                 android:text="@string/maintenance_cap"
                 android:textAppearance="?android:attr/textAppearanceListItem"
@@ -121,7 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:text="@string/status_cap"
+                    android:text="Done"
                     android:id="@+id/machinecard_1"
                     android:layout_marginBottom="3dp"
                     android:ellipsize="marquee"
@@ -218,18 +228,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="3dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
 
 
                 <ImageButton
                     android:id="@+id/machinecard_view_main_list"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:src="@drawable/ic_action_view_as_list"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/circle1"/>
+                <ImageButton
+                    android:id="@+id/machinecard_view_main_share"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:src="@drawable/ic_action_share"
                     android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="2dp"
-                    android:background="@color/md_teal_300"/>
+                    android:background="@drawable/circle1"/>
                 <View
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -237,12 +257,12 @@
                     />
                 <ImageButton
                     android:id="@+id/machinecard_new_main"
-                    android:layout_width="70dp"
-                    android:layout_height="30dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:src="@drawable/ic_plus2"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="25dp"
                     android:layout_marginTop="2dp"
-                    android:background="@color/md_teal_500"/>
+                    android:background="@drawable/circle3"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -274,24 +294,117 @@ addon:cardElevation="2dp"
         android:gravity="center"/>
     <TextView
         android:id="@+id/machinecard_n1"
-        android:text="Хозяйственные товары"
+        android:text="Нет данных"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/abc_primary_text_material_light"
-        android:textStyle="bold"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:ellipsize="marquee"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:textStyle="normal"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="@string/coins_counter_cap"
+            android:id="@+id/machinecard_20"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="0"
+            android:id="@+id/machinecard_acc_qty1"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"
+            android:gravity="right"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="@string/banknotes_cap"
+            android:id="@+id/machinecard_21"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="0"
+            android:id="@+id/machinecard_acc_qty2"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"
+            android:gravity="right"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="@string/total_counter_cap"
+            android:id="@+id/machinecard_23"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:text="0"
+            android:id="@+id/machinecard_acc_qty3"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="marquee"
+            android:singleLine="false"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="12sp"
+            android:gravity="right"
+            android:textStyle="bold"/>
+    </LinearLayout>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:text="Long description of the item"
+        android:text="Comments"
         android:id="@+id/machinecard_d1"
         android:layout_marginBottom="3dp"
         android:textColor="@color/abc_secondary_text_material_light"
@@ -300,8 +413,47 @@ addon:cardElevation="2dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:textSize="12sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/dividerVertical"
+        android:layout_margin="1dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+
+        <ImageButton
+            android:id="@+id/machinecard_view_acc_list"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_action_view_as_list"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/circle1"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="1dp"
+            />
+        <ImageButton
+            android:id="@+id/machinecard_new_acc"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_plus2"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/circle3"/>
+    </LinearLayout>
 
 </LinearLayout>
 </android.support.v7.widget.CardView>
+    </LinearLayout>
 
+    </ScrollView>
 </LinearLayout>

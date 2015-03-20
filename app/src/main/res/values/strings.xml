@@ -96,4 +96,8 @@
     <string name="status_done">Done</string>
     <string name="maintenance_started_toast">New maintenance has just been started</string>
     <string name="duration_cap">Duration (HH:MM):</string>
+    <string name="coins_counter_cap">Coins counter:</string>
+    <string name="banknotes_cap">Banknote counter:</string>
+    <string name="total_counter_cap">Overall counter:</string>
+    <string name="date_from_cap">From:</string>
 </resources>

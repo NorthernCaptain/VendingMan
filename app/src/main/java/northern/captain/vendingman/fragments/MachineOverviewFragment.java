@@ -11,6 +11,8 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.Date;
 
+import northern.captain.vendingman.AndroidContext;
+import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.MainActivity_;
 import northern.captain.vendingman.R;
 import northern.captain.vendingman.entities.Maintenance;
@@ -109,6 +111,14 @@ public class MachineOverviewFragment extends Fragment
         lastMaintenance = createNewMaintenance();
         initViews();
         MyToast.toast(R.string.maintenance_started_toast);
+    }
+
+    @Click(R.id.machinecard_maint_lay)
+    void onMaintenanceClick()
+    {
+        MaintenanceFragment fragment = FragmentFactory.singleton.newMaintenanceFragment();
+        fragment.setMaintenance(lastMaintenance);
+        AndroidContext.mainActivity.openOnTop(fragment);
     }
 
     private Maintenance createNewMaintenance()

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/maint_gitem_main_lay"
+        android:orientation="horizontal"
+        android:background="@color/white"
+    >
+
+        <ImageView
+            android:id="@+id/maint_gitem_ok_tick"
+            android:layout_margin="3dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/circle3"
+            android:src="@drawable/ic_action_accept"
+            ></ImageView>
+
+        <TextView
+            android:id="@+id/maint_gitem_name"
+            android:text="Хозяйственные товары"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/abc_primary_text_material_light"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:ellipsize="marquee"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:singleLine="false"/>
+
+        <ImageButton
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/circle1"
+            android:src="@drawable/ic_minus"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="9dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="9dp"
+            android:id="@+id/maint_gitem_minus"
+            />
+
+        <TextView
+            android:layout_width="54dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/abc_primary_text_material_light"
+            android:textSize="16sp"
+            android:text="12"
+            android:gravity="center"
+            android:id="@+id/maint_gitem_lineqty"
+            android:textStyle="bold"/>
+        <ImageButton
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/circle1"
+            android:src="@drawable/ic_plus2"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="9dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="9dp"
+            android:id="@+id/maint_gitem_plus"
+            />
+
+        </LinearLayout>
