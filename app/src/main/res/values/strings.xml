@@ -100,4 +100,8 @@
     <string name="banknotes_cap">Banknote counter:</string>
     <string name="total_counter_cap">Overall counter:</string>
     <string name="date_from_cap">From:</string>
+    <string name="enter_qty_cap">Enter quantity</string>
+    <string name="close_cap">Close</string>
+    <string name="close_maintenance_title">Close this maintenance?</string>
+    <string name="already_closed_toast">Maintenance has already been closed</string>
 </resources>

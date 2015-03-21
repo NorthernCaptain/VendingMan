@@ -34,7 +34,7 @@ public class Replenishment implements IEntity
     public String comments;
 
     @DatabaseField(columnName = "created_date", dataType = DataType.DATE_STRING)
-    public Date createdDate;
+    public Date createdDate = new Date();
 
     /**
      * State of the record. 1 - OK, 0 - deleted

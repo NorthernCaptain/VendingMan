@@ -43,7 +43,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="9dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="0dp"
+            android:layout_marginRight="3dp"
             android:layout_marginTop="9dp"
             android:id="@+id/maint_gitem_minus"
             />
@@ -58,7 +58,11 @@
             android:text="12"
             android:gravity="center"
             android:id="@+id/maint_gitem_lineqty"
-            android:textStyle="bold"/>
+            android:background="@drawable/roundrect1"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:textStyle="bold"
+            android:clickable="true"/>
         <ImageButton
             android:layout_width="28dp"
             android:layout_height="28dp"
@@ -66,7 +70,7 @@
             android:src="@drawable/ic_plus2"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="9dp"
-            android:layout_marginLeft="0dp"
+            android:layout_marginLeft="3dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="9dp"
             android:id="@+id/maint_gitem_plus"

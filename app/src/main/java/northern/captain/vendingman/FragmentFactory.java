@@ -3,6 +3,8 @@ package northern.captain.vendingman;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import northern.captain.vendingman.dialogs.EnterTextStringDialog;
+import northern.captain.vendingman.dialogs.EnterTextStringDialog_;
 import northern.captain.vendingman.dialogs.GoodsEditDialog;
 import northern.captain.vendingman.dialogs.GoodsEditDialog_;
 import northern.captain.vendingman.dialogs.MachineEditDialog;
@@ -16,6 +18,8 @@ import northern.captain.vendingman.fragments.MachineOverviewFragment;
 import northern.captain.vendingman.fragments.MachineOverviewFragment_;
 import northern.captain.vendingman.fragments.MaintenanceFragment;
 import northern.captain.vendingman.fragments.MaintenanceFragment_;
+import northern.captain.vendingman.fragments.MaintenanceListFragment;
+import northern.captain.vendingman.fragments.MaintenanceListFragment_;
 import northern.captain.vendingman.fragments.PrefFragment;
 
 /**
@@ -79,6 +83,8 @@ public class FragmentFactory
         return new GoodsEditDialog_();
     }
 
+    public EnterTextStringDialog newTextStringDialog() { return new EnterTextStringDialog_(); }
+
     public MachineEditDialog newVendingMachineEditDialog()
     {
         return new MachineEditDialog_();
@@ -87,4 +93,6 @@ public class FragmentFactory
     public MachineOverviewFragment newMachineOverviewFrag() { return new MachineOverviewFragment_();}
 
     public MaintenanceFragment newMaintenanceFragment() { return new MaintenanceFragment_();}
+
+    public MaintenanceListFragment newMaintenanceListFragment() { return new MaintenanceListFragment_();}
 }

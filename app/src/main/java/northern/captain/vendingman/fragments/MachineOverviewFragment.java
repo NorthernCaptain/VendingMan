@@ -1,5 +1,7 @@
 package northern.captain.vendingman.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import northern.captain.vendingman.R;
 import northern.captain.vendingman.entities.Maintenance;
 import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.VendingMachine;
+import northern.captain.vendingman.entities.VendingMachineFactory;
 import northern.captain.vendingman.tools.Helpers;
 import northern.captain.vendingman.tools.MyToast;
 
@@ -108,16 +111,66 @@ public class MachineOverviewFragment extends Fragment
     @Click(R.id.machinecard_new_main)
     void onNewMaintenanceClick()
     {
+        if(lastMaintenance != null && lastMaintenance.getStatus().equals(Maintenance.STATUS_OPEN))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setTitle(R.string.close_cap).setMessage(R.string.close_maintenance_title)
+                    .setCancelable(true).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i)
+                {
+                    MaintenanceFactory.instance.close(lastMaintenance);
+                    doCreateMaintenance();
+                }
+            })
+            .setNegativeButton(android.R.string.cancel, null)
+            .show();
+
+            return;
+        }
+
+        doCreateMaintenance();
+    }
+
+    private void doCreateMaintenance()
+    {
         lastMaintenance = createNewMaintenance();
         initViews();
-        MyToast.toast(R.string.maintenance_started_toast);
+        onMaintenanceClick();
     }
+
 
     @Click(R.id.machinecard_maint_lay)
     void onMaintenanceClick()
     {
         MaintenanceFragment fragment = FragmentFactory.singleton.newMaintenanceFragment();
         fragment.setMaintenance(lastMaintenance);
+        fragment.setOnDetachCallback(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                initViews();
+            }
+        });
+        AndroidContext.mainActivity.openOnTop(fragment);
+    }
+
+    @Click(R.id.machinecard_view_main_list)
+    void onMaintenanceListClick()
+    {
+        MaintenanceListFragment fragment = FragmentFactory.singleton.newMaintenanceListFragment();
+        fragment.setMachine(machine);
+        fragment.setOnDetachCallback(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                initViews();
+            }
+        });
         AndroidContext.mainActivity.openOnTop(fragment);
     }
 
@@ -130,6 +183,9 @@ public class MachineOverviewFragment extends Fragment
         maintenance.machineId = machine.id;
 
         MaintenanceFactory.instance.insert(maintenance);
+
+        machine.setLastMaintainDate(maintenance.startDate);
+        VendingMachineFactory.instance.update(machine);
 
         return maintenance;
     }

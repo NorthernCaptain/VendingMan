@@ -4,6 +4,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,7 +77,7 @@ public class MaintenanceFactory implements IEntityFactory<Maintenance>
 
             QueryBuilder<Maintenance, Integer> query = dao.queryBuilder();
 
-            query.where().eq("machine_id", machineId);
+            query.where().eq("machine_id", machineId).and().eq("state", 1);
             query.orderBy("start_date", false);
 
             query.limit(2L);
@@ -91,5 +93,37 @@ public class MaintenanceFactory implements IEntityFactory<Maintenance>
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public List<Maintenance> getMaintenanceList(int machineId)
+    {
+        try
+        {
+            Dao<Maintenance, Integer> dao = SQLManager.instance.getMaintenanceDao();
+
+            QueryBuilder<Maintenance, Integer> query = dao.queryBuilder();
+
+            query.where().eq("machine_id", machineId).and().eq("state", 1);
+            query.orderBy("start_date", false);
+
+            List<Maintenance> list = dao.query(query.prepare());
+            if(list != null && !list.isEmpty())
+            {
+                return list;
+            }
+        }
+        catch(SQLException ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return new ArrayList<Maintenance>();
+    }
+
+    public void close(Maintenance maintenance)
+    {
+        maintenance.setStatus(Maintenance.STATUS_DONE);
+        maintenance.setFinishDate(new Date());
+        update(maintenance);
     }
 }

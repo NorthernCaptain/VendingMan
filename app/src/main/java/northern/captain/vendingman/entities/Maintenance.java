@@ -51,6 +51,8 @@ public class Maintenance implements IEntity
     @DatabaseField(columnName = "state", defaultValue = "1")
     public int state = 1;
 
+    public Object extra;
+
     @Override
     public char getType()
     {

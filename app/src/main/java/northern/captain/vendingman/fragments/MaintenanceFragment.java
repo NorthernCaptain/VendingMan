@@ -1,5 +1,7 @@
 package northern.captain.vendingman.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
@@ -24,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.R;
+import northern.captain.vendingman.dialogs.EnterTextStringDialog;
 import northern.captain.vendingman.entities.Goods;
 import northern.captain.vendingman.entities.GoodsFactory;
 import northern.captain.vendingman.entities.Maintenance;
@@ -32,6 +36,7 @@ import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.Replenishment;
 import northern.captain.vendingman.entities.ReplenishmentFactory;
 import northern.captain.vendingman.tools.Helpers;
+import northern.captain.vendingman.tools.MyToast;
 
 /**
  * Created by leo on 3/20/15.
@@ -131,28 +136,8 @@ public class MaintenanceFragment extends Fragment
         if(maintenance != null)
         {
             maintCommentEdit.setText(maintenance.getComments());
-            StringBuilder buf = new StringBuilder(Helpers.smartDateTimeString(maintenance.startDate));
-            buf.append(" - ");
-            Date endDate;
-            if (maintenance.finishDate == null)
-            {
-                buf.append(getResources().getString(R.string.now_label));
-                endDate = new Date();
-            } else
-            {
-                endDate = maintenance.finishDate;
-                buf.append(Helpers.smartDateTimeString(maintenance.finishDate));
-            }
-            buf.append(" [");
-            buf.append(Helpers.deltaHoursMins(endDate.getTime() - maintenance.startDate.getTime()));
-            buf.append("]");
 
-            maintTopText.setText(buf.toString());
-
-            maintStatusText.setText(maintenance.status.equals(Maintenance.STATUS_OPEN)
-                    ? R.string.status_opened : R.string.status_done);
-
-            maintQtyText.setText(Integer.toString(maintenance.replenishedQty));
+            setHeader();
 
             loadData();
 
@@ -174,6 +159,32 @@ public class MaintenanceFragment extends Fragment
             }
         }
         setMode(mode);
+    }
+
+    private void setHeader()
+    {
+        StringBuilder buf = new StringBuilder(Helpers.smartDateTimeString(maintenance.startDate));
+        buf.append(" - ");
+        Date endDate;
+        if (maintenance.finishDate == null)
+        {
+            buf.append(getResources().getString(R.string.now_label));
+            endDate = new Date();
+        } else
+        {
+            endDate = maintenance.finishDate;
+            buf.append(Helpers.smartDateTimeString(maintenance.finishDate));
+        }
+        buf.append(" [");
+        buf.append(Helpers.deltaHoursMins(endDate.getTime() - maintenance.startDate.getTime()));
+        buf.append("]");
+
+        maintTopText.setText(buf.toString());
+
+        maintStatusText.setText(maintenance.status.equals(Maintenance.STATUS_OPEN)
+                ? R.string.status_opened : R.string.status_done);
+
+        maintQtyText.setText(Integer.toString(maintenance.replenishedQty));
     }
 
     private void addItemQty(ReplItem item, int deltaQty)
@@ -271,6 +282,7 @@ public class MaintenanceFragment extends Fragment
 
                 buttonMinus.setOnClickListener(this);
                 buttonPlus.setOnClickListener(this);
+                qtyText.setOnClickListener(this);
             }
 
             public void populateData(ReplItem item, int pos)
@@ -286,6 +298,38 @@ public class MaintenanceFragment extends Fragment
             @Override
             public void onClick(View view)
             {
+                if(view == qtyText)
+                {
+                    EnterTextStringDialog dialog = FragmentFactory.singleton.newTextStringDialog();
+                    dialog.setTitle(R.string.enter_qty_cap);
+                    dialog.setCallback(new EnterTextStringDialog.ITextCallback()
+                    {
+                        @Override
+                        public boolean textEntered(String text)
+                        {
+                            try
+                            {
+                                int qty = Integer.parseInt(text.trim());
+
+                                int pos = findPosByExtra(ViewHolder.this);
+                                ReplItem item = items.get(pos);
+
+                                int delta = qty - item.getQty();
+                                addItemQty(item, delta);
+                                notifyItemChanged(pos);
+
+                            } catch(Exception ex)
+                            {
+                                MyToast.toast(R.string.err_wrong_expression);
+                                return false;
+                            }
+                            return true;
+                        }
+                    });
+                    dialog.show(getFragmentManager(), "qty");
+                    return;
+                }
+
                 int delta = 1;
                 if(view == buttonMinus) delta = -1;
 
@@ -298,12 +342,22 @@ public class MaintenanceFragment extends Fragment
         }
     }
 
+    public Runnable onDetachCallback;
+
+    public void setOnDetachCallback(Runnable onDetachCallback)
+    {
+        this.onDetachCallback = onDetachCallback;
+    }
 
     @Override
     public void onDetach()
     {
         super.onDetach();
         saveData();
+        if(onDetachCallback != null)
+        {
+            onDetachCallback.run();
+        }
     }
 
     private void saveData()
@@ -368,5 +422,36 @@ public class MaintenanceFragment extends Fragment
     void onCommentViewClick()
     {
         setMode(MODE_COMMENTS);
+    }
+
+    @Click(R.id.maint_stop)
+    void onStopClick()
+    {
+        if(maintenance.getStatus().equals(Maintenance.STATUS_DONE))
+        {
+            MyToast.toast(R.string.already_closed_toast);
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle(R.string.close_cap).setMessage(R.string.close_maintenance_title)
+                .setCancelable(true).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                closeMaintenance();
+            }
+        })
+        .setNegativeButton(android.R.string.cancel, null);
+
+        builder.show();
+    }
+
+    private void closeMaintenance()
+    {
+        MaintenanceFactory.instance.close(maintenance);
+        setHeader();
     }
 }

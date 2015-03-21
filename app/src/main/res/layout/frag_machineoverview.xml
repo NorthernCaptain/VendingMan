@@ -131,7 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                    android:text="Done"
+                    android:text="@string/status_cap"
                     android:id="@+id/machinecard_1"
                     android:layout_marginBottom="3dp"
                     android:ellipsize="marquee"
