@@ -3,6 +3,10 @@ package northern.captain.vendingman;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import northern.captain.vendingman.dialogs.AccountingDialog;
+import northern.captain.vendingman.dialogs.AccountingDialog_;
+import northern.captain.vendingman.dialogs.EnterMaintenanceDatesDialog;
+import northern.captain.vendingman.dialogs.EnterMaintenanceDatesDialog_;
 import northern.captain.vendingman.dialogs.EnterTextStringDialog;
 import northern.captain.vendingman.dialogs.EnterTextStringDialog_;
 import northern.captain.vendingman.dialogs.GoodsEditDialog;
@@ -95,4 +99,8 @@ public class FragmentFactory
     public MaintenanceFragment newMaintenanceFragment() { return new MaintenanceFragment_();}
 
     public MaintenanceListFragment newMaintenanceListFragment() { return new MaintenanceListFragment_();}
+
+    public EnterMaintenanceDatesDialog newEnterMaintenanceDatesDialog() { return new EnterMaintenanceDatesDialog_();}
+
+    public AccountingDialog newAccountingDialog() { return new AccountingDialog_();}
 }

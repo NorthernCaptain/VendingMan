@@ -17,6 +17,7 @@ import northern.captain.vendingman.AndroidContext;
 import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.MainActivity_;
 import northern.captain.vendingman.R;
+import northern.captain.vendingman.dialogs.AccountingDialog;
 import northern.captain.vendingman.entities.Maintenance;
 import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.VendingMachine;
@@ -188,5 +189,13 @@ public class MachineOverviewFragment extends Fragment
         VendingMachineFactory.instance.update(machine);
 
         return maintenance;
+    }
+
+    @Click(R.id.machinecard_new_acc)
+    void onCreateAccountingClick()
+    {
+        AccountingDialog dialog = FragmentFactory.singleton.newAccountingDialog();
+        dialog.setTitle(R.string.new_accounting_title);
+        dialog.show(getFragmentManager(), "acc");
     }
 }

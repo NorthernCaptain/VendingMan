@@ -104,4 +104,7 @@
     <string name="close_cap">Close</string>
     <string name="close_maintenance_title">Close this maintenance?</string>
     <string name="already_closed_toast">Maintenance has already been closed</string>
+    <string name="date_to_cap">To:</string>
+    <string name="edit_maintenance_dates_title">Edit maintenance dates</string>
+    <string name="new_accounting_title">Create new account record</string>
 </resources>

@@ -28,6 +28,7 @@ import java.util.List;
 
 import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.R;
+import northern.captain.vendingman.dialogs.EnterMaintenanceDatesDialog;
 import northern.captain.vendingman.dialogs.EnterTextStringDialog;
 import northern.captain.vendingman.entities.Goods;
 import northern.captain.vendingman.entities.GoodsFactory;
@@ -64,6 +65,9 @@ public class MaintenanceFragment extends Fragment
 
     @ViewById(R.id.maint_comment_lay)
     View commentLay;
+
+    @ViewById(R.id.maint_stop)
+    ImageButton stopBut;
 
     private static final int MODE_LIST_ALL = 1;
     private static final int MODE_LIST_USED = 2;
@@ -156,6 +160,14 @@ public class MaintenanceFragment extends Fragment
 
                 usedAdapter = new TheListAdapter(usedItems);
                 usedListView.setAdapter(usedAdapter);
+            }
+
+            if(maintenance.status.equals(Maintenance.STATUS_OPEN))
+            {
+                stopBut.setImageResource(R.drawable.ic_action_stop);
+            } else
+            {
+                stopBut.setImageResource(R.drawable.ic_action_edit);
             }
         }
         setMode(mode);
@@ -429,7 +441,18 @@ public class MaintenanceFragment extends Fragment
     {
         if(maintenance.getStatus().equals(Maintenance.STATUS_DONE))
         {
-            MyToast.toast(R.string.already_closed_toast);
+            EnterMaintenanceDatesDialog dialog = FragmentFactory.singleton.newEnterMaintenanceDatesDialog();
+            dialog.setMaintenance(maintenance);
+            dialog.setTitle(R.string.edit_maintenance_dates_title);
+            dialog.setCallback(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    setHeader();
+                }
+            });
+            dialog.show(getFragmentManager(), "edates");
             return;
         }
 
