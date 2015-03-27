@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import northern.captain.vendingman.BaseFragment;
 import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.R;
 import northern.captain.vendingman.dialogs.EnterMaintenanceDatesDialog;
@@ -43,7 +44,7 @@ import northern.captain.vendingman.tools.MyToast;
  * Created by leo on 3/20/15.
  */
 @EFragment(R.layout.frag_maintenance)
-public class MaintenanceFragment extends Fragment
+public class MaintenanceFragment extends BaseFragment
 {
     @ViewById(R.id.maint_dates_lb)
     TextView maintTopText;
@@ -141,6 +142,8 @@ public class MaintenanceFragment extends Fragment
         {
             maintCommentEdit.setText(maintenance.getComments());
 
+            mode = maintenance.isOpen() ? MODE_LIST_ALL : MODE_LIST_USED;
+
             setHeader();
 
             loadData();
@@ -162,13 +165,6 @@ public class MaintenanceFragment extends Fragment
                 usedListView.setAdapter(usedAdapter);
             }
 
-            if(maintenance.status.equals(Maintenance.STATUS_OPEN))
-            {
-                stopBut.setImageResource(R.drawable.ic_action_stop);
-            } else
-            {
-                stopBut.setImageResource(R.drawable.ic_action_edit);
-            }
         }
         setMode(mode);
     }
@@ -193,18 +189,30 @@ public class MaintenanceFragment extends Fragment
 
         maintTopText.setText(buf.toString());
 
-        maintStatusText.setText(maintenance.status.equals(Maintenance.STATUS_OPEN)
-                ? R.string.status_opened : R.string.status_done);
-
         maintQtyText.setText(Integer.toString(maintenance.replenishedQty));
+
+        if(maintenance.isOpen())
+        {
+            maintStatusText.setText(R.string.status_opened);
+            stopBut.setImageResource(R.drawable.ic_action_stop);
+        } else
+        {
+            maintStatusText.setText(R.string.status_done);
+            stopBut.setImageResource(R.drawable.ic_action_edit);
+        }
+
     }
 
     private void addItemQty(ReplItem item, int deltaQty)
     {
-        item.setQty(item.getQty()+deltaQty);
-        maintenance.replenishedQty += deltaQty;
-        MaintenanceFactory.instance.update(maintenance);
-        maintQtyText.setText(Integer.toString(maintenance.replenishedQty));
+        int oldQty = item.getQty();
+        item.setQty(oldQty + deltaQty);
+        if(oldQty != item.getQty())
+        {
+            maintenance.replenishedQty += deltaQty;
+            MaintenanceFactory.instance.update(maintenance);
+            maintQtyText.setText(Integer.toString(maintenance.replenishedQty));
+        }
     }
 
     private void loadData()
@@ -282,6 +290,8 @@ public class MaintenanceFragment extends Fragment
             ImageView okTick;
             LinearLayout layout;
 
+            ReplItem assignedItem;
+
             public ViewHolder(View itemView)
             {
                 super(itemView);
@@ -299,7 +309,13 @@ public class MaintenanceFragment extends Fragment
 
             public void populateData(ReplItem item, int pos)
             {
+                if(assignedItem != null)
+                {
+                    assignedItem.extra = null;
+                }
+
                 int qty = item.getQty();
+                assignedItem = item;
                 item.extra = this;
                 nameText.setText(item.goods.name);
                 qtyText.setText(Integer.toString(qty));
@@ -351,24 +367,6 @@ public class MaintenanceFragment extends Fragment
                 addItemQty(item, delta);
                 notifyItemChanged(pos);
             }
-        }
-    }
-
-    public Runnable onDetachCallback;
-
-    public void setOnDetachCallback(Runnable onDetachCallback)
-    {
-        this.onDetachCallback = onDetachCallback;
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        saveData();
-        if(onDetachCallback != null)
-        {
-            onDetachCallback.run();
         }
     }
 
@@ -439,7 +437,7 @@ public class MaintenanceFragment extends Fragment
     @Click(R.id.maint_stop)
     void onStopClick()
     {
-        if(maintenance.getStatus().equals(Maintenance.STATUS_DONE))
+        if(!maintenance.isOpen())
         {
             EnterMaintenanceDatesDialog dialog = FragmentFactory.singleton.newEnterMaintenanceDatesDialog();
             dialog.setMaintenance(maintenance);

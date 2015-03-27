@@ -21,9 +21,13 @@ import java.util.Date;
 import northern.captain.vendingman.AndroidContext;
 import northern.captain.vendingman.R;
 import northern.captain.vendingman.entities.Accounting;
+import northern.captain.vendingman.entities.AccountingFactory;
 import northern.captain.vendingman.entities.Maintenance;
 import northern.captain.vendingman.entities.MaintenanceFactory;
+import northern.captain.vendingman.entities.VendingMachine;
+import northern.captain.vendingman.entities.VendingMachineFactory;
 import northern.captain.vendingman.tools.Helpers;
+import northern.captain.vendingman.tools.MyToast;
 
 /**
  * Created by leo on 20.11.14.
@@ -67,6 +71,18 @@ public class AccountingDialog extends DialogFragment
         this.accounting = accounting;
     }
 
+    public Accounting getAccounting()
+    {
+        return accounting;
+    }
+
+    VendingMachine machine;
+
+    public void setMachine(VendingMachine machine)
+    {
+        this.machine = machine;
+    }
+
     @AfterViews
     void initViews()
     {
@@ -75,9 +91,18 @@ public class AccountingDialog extends DialogFragment
             getDialog().setTitle(titleResId);
         }
 
-        transactionFromDate.setTime(accounting == null ? new Date() : accounting.createdDate);
-        initDates();
+        if(accounting != null)
+        {
+            transactionFromDate.setTime(accounting.createdDate);
+            overallEdit.setText(Integer.toString(accounting.otherQty));
+            coinsEdit.setText(Integer.toString(accounting.coinsQty));
+            banknotesEdit.setText(Integer.toString(accounting.moneyQty));
+        } else
+        {
+            transactionFromDate.setTime(new Date());
+        }
 
+        initDates();
 
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
@@ -96,9 +121,61 @@ public class AccountingDialog extends DialogFragment
         titleResId = resId;
     }
 
-    @Click(R.id.dates_maint_ok_but)
+    @Click(R.id.account_ok_but)
     void onOkClick()
     {
+        int coins;
+        int banknotes;
+        int overall;
+
+        try
+        {
+            coins = Integer.parseInt(coinsEdit.getText().toString());
+        }
+        catch (Exception ex)
+        {
+            MyToast.toast(R.string.err_zero_qty);
+            return;
+        }
+        try
+        {
+            banknotes = Integer.parseInt(banknotesEdit.getText().toString());
+        }
+        catch (Exception ex)
+        {
+            MyToast.toast(R.string.err_zero_qty);
+            return;
+        }
+        try
+        {
+            overall = Integer.parseInt(overallEdit.getText().toString());
+        }
+        catch (Exception ex)
+        {
+            MyToast.toast(R.string.err_zero_qty);
+            return;
+        }
+
+        if(accounting == null)
+        {
+            accounting = AccountingFactory.instance.newItem();
+            accounting.setMachineId(machine.getId());
+        }
+
+        accounting.setCoinsQty(coins);
+        accounting.setMoneyQty(banknotes);
+        accounting.setOtherQty(overall);
+        accounting.setCreatedDate(transactionFromDate.getTime());
+
+        if(machine.lastAccountDate == null
+            || machine.lastAccountDate.before(accounting.createdDate))
+        {
+            machine.setLastAccountDate(accounting.createdDate);
+            VendingMachineFactory.instance.update(machine);
+        }
+
+        AccountingFactory.instance.update(accounting);
+
         if(callback != null)
         {
             callback.run();
@@ -106,7 +183,7 @@ public class AccountingDialog extends DialogFragment
         dismiss();
     }
 
-    @Click(R.id.dates_maint_cancel_but)
+    @Click(R.id.account_cancel_but)
     void onCancelClick()
     {
         dismiss();
@@ -163,7 +240,7 @@ public class AccountingDialog extends DialogFragment
                     }
                 },
                 transactionFromDate.get(Calendar.HOUR_OF_DAY),
-                transactionFromDate.get(Calendar.MINUTE), false, false);
+                transactionFromDate.get(Calendar.MINUTE), true, false);
         timePickerDialog.show(getFragmentManager(), "time");
     }
 }

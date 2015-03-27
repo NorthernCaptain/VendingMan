@@ -11,6 +11,8 @@ import northern.captain.vendingman.AndroidContext;
  */
 public class Helpers
 {
+    public static final long DELETION_DELAY = 3000;
+
     public static final double MULTIPLIER = 100;
     public static int amountFromString(String amountString)
     {

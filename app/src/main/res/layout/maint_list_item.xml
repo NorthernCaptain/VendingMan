@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:id="@+id/maintlist_maint_lay">
+<LinearLayout
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/maintlist_maint_info_lay">
         <TextView
             android:id="@+id/maintlist_main_top"
             android:text="Нет данных"
@@ -129,3 +134,37 @@
         </LinearLayout>
 
 </LinearLayout>
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/bgDarkGrayTrans"
+android:orientation="horizontal"
+android:id="@+id/maintlist_deleted_lay"
+android:visibility="gone"
+    >
+
+<TextView
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="@string/item_deleted_cap"
+    android:id="@+id/textView3"
+    android:layout_gravity="center_vertical"
+    android:layout_weight="1"
+    android:textColor="@android:color/white"
+    android:layout_marginLeft="20dp"
+    />
+
+<Button
+    style="?android:attr/borderlessButtonStyle"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:text="@android:string/cancel"
+    android:id="@+id/maintlist_undo_btn"
+    android:layout_gravity="center_vertical"
+    android:layout_marginRight="3dp"
+    android:background="@color/bgDarkGray"
+    android:maxWidth="110dp"
+    android:textColor="@color/md_orange_500"/>
+</LinearLayout>
+</FrameLayout>

@@ -93,4 +93,5 @@
     <string name="total_counter_cap">Общий счетчик:</string>
     <string name="already_closed_toast">Обслуживание уже было завершено</string>
     <string name="balance_wallet_hint"></string>
+    <string name="edit_accounting_title">Изменить аккаунтинг</string>
 </resources>

@@ -47,8 +47,6 @@ public class GoodsListFragment extends BaseFragment
 
     TheListAdapter adapter;
 
-    private static final long DELETION_DELAY = 3000;
-
     @AfterViews
     void initViews()
     {
@@ -82,13 +80,12 @@ public class GoodsListFragment extends BaseFragment
         }));
 
         ItemClickSupport itemClicker = ItemClickSupport.addTo(listView);
-        itemClicker.setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener()
+        itemClicker.setOnItemClickListener(new ItemClickSupport.OnItemClickListener()
         {
             @Override
-            public boolean onItemLongClick(RecyclerView recyclerView, View view, int position, long l)
+            public void onItemClick(RecyclerView recyclerView, View view, int position, long l)
             {
                 onEditItemClicked(position);
-                return true;
             }
         });
     }
@@ -208,7 +205,7 @@ public class GoodsListFragment extends BaseFragment
                     {
                         doActualDeletion(pos, item);
                     }
-                }, DELETION_DELAY);
+                }, Helpers.DELETION_DELAY);
             }
         }
     }

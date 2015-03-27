@@ -133,8 +133,9 @@ public class MachineMaintenanceListFragment extends BaseFragment
     }
 
 
-    private void updateData()
+    public void updateData()
     {
         items = VendingMachineFactory.instance.getVendingMachineAll();
+        adapter.notifyDataSetChanged();
     }
 }

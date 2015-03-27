@@ -80,12 +80,11 @@ public class EnterMaintenanceDatesDialog extends DialogFragment
 
     private void initDates()
     {
-        fromDateBut.setText(Helpers.smartDateString(maintenance.startDate));
-        fromTimeBut.setText(AndroidContext.timeFormat.format(maintenance.startDate));
+        fromDateBut.setText(Helpers.smartDateString(transactionFromDate.getTime()));
+        fromTimeBut.setText(AndroidContext.timeFormat.format(transactionFromDate.getTime()));
 
-        toDateBut.setText(Helpers.smartDateString(maintenance.finishDate));
-        toTimeBut.setText(AndroidContext.timeFormat.format(maintenance.finishDate));
-
+        toDateBut.setText(Helpers.smartDateString(transactionToDate.getTime()));
+        toTimeBut.setText(AndroidContext.timeFormat.format(transactionToDate.getTime()));
     }
 
     private int titleResId = 0;
@@ -185,7 +184,8 @@ public class EnterMaintenanceDatesDialog extends DialogFragment
                     }
                 },
                 transactionToDate.get(Calendar.HOUR_OF_DAY),
-                transactionToDate.get(Calendar.MINUTE), false, false);
+                transactionToDate.get(Calendar.MINUTE), true, false);
+
         timePickerDialog.show(getFragmentManager(), "time");
     }
 
@@ -204,7 +204,7 @@ public class EnterMaintenanceDatesDialog extends DialogFragment
                     }
                 },
                 transactionFromDate.get(Calendar.HOUR_OF_DAY),
-                transactionFromDate.get(Calendar.MINUTE), false, false);
+                transactionFromDate.get(Calendar.MINUTE), true, false);
         timePickerDialog.show(getFragmentManager(), "time");
     }
 }

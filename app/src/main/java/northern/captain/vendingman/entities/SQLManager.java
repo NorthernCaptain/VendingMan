@@ -198,6 +198,7 @@ public class SQLManager
         goodsDao = null;
         maintenanceDao = null;
         replDao = null;
+        accDao = null;
     }
 
     public void resume()
@@ -336,5 +337,22 @@ public class SQLManager
             }
         }
         return replDao;
+    }
+
+    private Dao<Accounting, Integer> accDao;
+
+    public Dao<Accounting, Integer> getAccountingDao()
+    {
+        if(accDao == null)
+        {
+            try
+            {
+                accDao = helper.getDao(Accounting.class);
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return accDao;
     }
 }

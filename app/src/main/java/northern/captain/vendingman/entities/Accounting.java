@@ -40,13 +40,15 @@ public class Accounting implements IEntity
     public int otherQty;
 
     @DatabaseField(columnName = "created_date", dataType = DataType.DATE_STRING)
-    public Date createdDate;
+    public Date createdDate = new Date();
 
     /**
      * State of the record. 1 - OK, 0 - deleted
      */
     @DatabaseField(columnName = "state", defaultValue = "1")
     public int state = 1;
+
+    public Object extra;
 
     @Override
     public char getType()

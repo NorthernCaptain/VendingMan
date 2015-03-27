@@ -107,4 +107,5 @@
     <string name="date_to_cap">To:</string>
     <string name="edit_maintenance_dates_title">Edit maintenance dates</string>
     <string name="new_accounting_title">Create new account record</string>
+    <string name="edit_accounting_title">Edit account record</string>
 </resources>

@@ -269,6 +269,7 @@
     </android.support.v7.widget.CardView>
 
 <android.support.v7.widget.CardView
+    android:id="@+id/machinecard_acc_card"
 android:layout_width="fill_parent"
 android:layout_height="wrap_content"
 addon:cardCornerRadius="2dp"
@@ -293,7 +294,7 @@ addon:cardElevation="2dp"
         android:textSize="14sp"
         android:gravity="center"/>
     <TextView
-        android:id="@+id/machinecard_n1"
+        android:id="@+id/machinecard_acc_desc"
         android:text="Нет данных"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_width="wrap_content"
@@ -405,7 +406,7 @@ addon:cardElevation="2dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:text="Comments"
-        android:id="@+id/machinecard_d1"
+        android:id="@+id/machinecard_acc_comment"
         android:layout_marginBottom="3dp"
         android:textColor="@color/abc_secondary_text_material_light"
         android:ellipsize="marquee"

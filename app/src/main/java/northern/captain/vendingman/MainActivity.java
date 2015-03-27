@@ -19,6 +19,7 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import northern.captain.vendingman.entities.EntitiesFactory;
 import northern.captain.vendingman.entities.SQLManager;
 import northern.captain.vendingman.entities.VendingMachine;
+import northern.captain.vendingman.fragments.MachineMaintenanceListFragment;
 import northern.captain.vendingman.fragments.MachineOverviewFragment;
 import northern.captain.vendingman.gui.PreferenceListFragment;
 import northern.captain.vendingman.process.ColorMan;
@@ -221,11 +222,18 @@ public class MainActivity extends ActionBarActivity
 
     }
 
-    public void openMachine(VendingMachine machine)
+    public void openMachine(VendingMachine machine, final MachineMaintenanceListFragment maintenanceListFragment)
     {
         MachineOverviewFragment fragment = FragmentFactory.singleton.newMachineOverviewFrag();
         fragment.setMachine(machine);
-
+        fragment.setOnDetachCallback(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                maintenanceListFragment.updateData();
+            }
+        });
         openOnTop(fragment);
     }
 

@@ -28,4 +28,21 @@ public class BaseFragment extends Fragment
                     bundle.getInt(FragmentFactory.ARG_SECTION_NUMBER));
         }
     }
+
+    public Runnable onDetachCallback;
+
+    public void setOnDetachCallback(Runnable onDetachCallback)
+    {
+        this.onDetachCallback = onDetachCallback;
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        if(onDetachCallback != null)
+        {
+            onDetachCallback.run();
+        }
+    }
 }

@@ -14,10 +14,13 @@ import org.androidannotations.annotations.ViewById;
 import java.util.Date;
 
 import northern.captain.vendingman.AndroidContext;
+import northern.captain.vendingman.BaseFragment;
 import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.MainActivity_;
 import northern.captain.vendingman.R;
 import northern.captain.vendingman.dialogs.AccountingDialog;
+import northern.captain.vendingman.entities.Accounting;
+import northern.captain.vendingman.entities.AccountingFactory;
 import northern.captain.vendingman.entities.Maintenance;
 import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.VendingMachine;
@@ -29,10 +32,11 @@ import northern.captain.vendingman.tools.MyToast;
  * Created by leo on 3/18/15.
  */
 @EFragment(R.layout.frag_machineoverview)
-public class MachineOverviewFragment extends Fragment
+public class MachineOverviewFragment extends BaseFragment
 {
     private VendingMachine machine;
     private Maintenance lastMaintenance;
+    private Accounting lastAccounting;
 
     @ViewById(R.id.machinecard_name)
     TextView machineNameText;
@@ -55,6 +59,22 @@ public class MachineOverviewFragment extends Fragment
     @ViewById(R.id.machinecard_duration)
     TextView maintDurationText;
 
+    @ViewById(R.id.machinecard_acc_comment)
+    TextView maintAccComment;
+
+    @ViewById(R.id.machinecard_acc_qty1)
+    TextView maintAccCoinsText;
+
+    @ViewById(R.id.machinecard_acc_qty2)
+    TextView maintAccBanknotesText;
+
+    @ViewById(R.id.machinecard_acc_qty3)
+    TextView maintAccOverallText;
+
+    @ViewById(R.id.machinecard_acc_desc)
+    TextView maintAccText;
+
+
     public VendingMachine getMachine()
     {
         return machine;
@@ -71,6 +91,7 @@ public class MachineOverviewFragment extends Fragment
         if(machine == null) return;
 
         lastMaintenance = MaintenanceFactory.instance.getLatestMaintenance(machine.id);
+        lastAccounting = AccountingFactory.instance.getLatestAccounting(machine.id);
 
         machineNameText.setText(machine.getName());
         machineDescription.setText(machine.getDescription());
@@ -102,17 +123,37 @@ public class MachineOverviewFragment extends Fragment
                 maintCommentText.setText(lastMaintenance.comments);
             }
 
-            maintStatusText.setText(lastMaintenance.status.equals(Maintenance.STATUS_OPEN)
+            maintStatusText.setText(lastMaintenance.isOpen()
                     ? R.string.status_opened : R.string.status_done);
 
             maintQtyText.setText(Integer.toString(lastMaintenance.replenishedQty));
         }
+
+        displayAccounting();
+    }
+
+    private void displayAccounting()
+    {
+        if(lastAccounting == null) return;
+
+        if(!lastAccounting.createdDate.equals(machine.getLastAccountDate()))
+        {
+            machine.setLastAccountDate(lastAccounting.createdDate);
+            VendingMachineFactory.instance.update(machine);
+        }
+
+        maintAccCoinsText.setText(Integer.toString(lastAccounting.coinsQty));
+        maintAccBanknotesText.setText(Integer.toString(lastAccounting.moneyQty));
+        maintAccOverallText.setText(Integer.toString(lastAccounting.otherQty));
+        maintAccComment.setText(lastAccounting.getComments());
+
+        maintAccText.setText(Helpers.smartDateTimeString(lastAccounting.createdDate));
     }
 
     @Click(R.id.machinecard_new_main)
     void onNewMaintenanceClick()
     {
-        if(lastMaintenance != null && lastMaintenance.getStatus().equals(Maintenance.STATUS_OPEN))
+        if(lastMaintenance != null && lastMaintenance.isOpen())
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -175,12 +216,28 @@ public class MachineOverviewFragment extends Fragment
         AndroidContext.mainActivity.openOnTop(fragment);
     }
 
+    @Click(R.id.machinecard_view_acc_list)
+    void onAccountingListClick()
+    {
+        AccountingListFragment fragment = FragmentFactory.singleton.newAccountingListFragment();
+        fragment.setMachine(machine);
+        fragment.setOnDetachCallback(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                initViews();
+            }
+        });
+        AndroidContext.mainActivity.openOnTop(fragment);
+    }
+
     private Maintenance createNewMaintenance()
     {
         Maintenance maintenance = MaintenanceFactory.instance.newItem();
 
         maintenance.startDate = new Date();
-        maintenance.status = Maintenance.STATUS_OPEN;
+        maintenance.setStatus(Maintenance.STATUS_OPEN);
         maintenance.machineId = machine.id;
 
         MaintenanceFactory.instance.insert(maintenance);
@@ -194,8 +251,40 @@ public class MachineOverviewFragment extends Fragment
     @Click(R.id.machinecard_new_acc)
     void onCreateAccountingClick()
     {
-        AccountingDialog dialog = FragmentFactory.singleton.newAccountingDialog();
+        final AccountingDialog dialog = FragmentFactory.singleton.newAccountingDialog();
         dialog.setTitle(R.string.new_accounting_title);
+        dialog.setMachine(machine);
+        dialog.setCallback(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                lastAccounting = dialog.getAccounting();
+                displayAccounting();
+            }
+        });
         dialog.show(getFragmentManager(), "acc");
+    }
+
+    @Click(R.id.machinecard_acc_card)
+    void onEditAccountingClick()
+    {
+        if(lastAccounting != null)
+        {
+            final AccountingDialog dialog = FragmentFactory.singleton.newAccountingDialog();
+            dialog.setTitle(R.string.edit_accounting_title);
+            dialog.setMachine(machine);
+            dialog.setAccounting(lastAccounting);
+            dialog.setCallback(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    lastAccounting = AccountingFactory.instance.getLatestAccounting(machine.id);
+                    displayAccounting();
+                }
+            });
+            dialog.show(getFragmentManager(), "acc");
+        }
     }
 }

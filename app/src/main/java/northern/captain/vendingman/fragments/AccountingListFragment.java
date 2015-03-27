@@ -23,12 +23,10 @@ import northern.captain.vendingman.AndroidContext;
 import northern.captain.vendingman.BaseFragment;
 import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.R;
-import northern.captain.vendingman.entities.Goods;
-import northern.captain.vendingman.entities.GoodsFactory;
-import northern.captain.vendingman.entities.Maintenance;
-import northern.captain.vendingman.entities.MaintenanceFactory;
+import northern.captain.vendingman.dialogs.AccountingDialog;
+import northern.captain.vendingman.entities.Accounting;
+import northern.captain.vendingman.entities.AccountingFactory;
 import northern.captain.vendingman.entities.VendingMachine;
-import northern.captain.vendingman.entities.VendingMachineFactory;
 import northern.captain.vendingman.gui.SwipeDismissRecyclerViewTouchListener;
 import northern.captain.vendingman.tools.Helpers;
 
@@ -36,12 +34,12 @@ import northern.captain.vendingman.tools.Helpers;
  * Created by leo on 13.03.15.
  */
 @EFragment(R.layout.frag_machinemainlist)
-public class MaintenanceListFragment extends BaseFragment
+public class AccountingListFragment extends BaseFragment
 {
     @ViewById(R.id.fmachinemain_rview)
     TwoWayView listView;
 
-    List<Maintenance> items;
+    List<Accounting> items;
 
     TheListAdapter adapter;
 
@@ -49,7 +47,7 @@ public class MaintenanceListFragment extends BaseFragment
 
     public interface ChosenCallback
     {
-        public void itemChosen(Maintenance machine);
+        public void itemChosen(Accounting machine);
     }
 
     private ChosenCallback callback;
@@ -68,7 +66,7 @@ public class MaintenanceListFragment extends BaseFragment
     void initViews()
     {
         listView.setHasFixedSize(true);
-        items = MaintenanceFactory.instance.getMaintenanceList(machine.id);
+        items = AccountingFactory.instance.getAccountingList(machine.id);
         final Drawable divider = getResources().getDrawable(R.drawable.divider1);
         listView.addItemDecoration(new DividerItemDecoration(divider));
 
@@ -79,7 +77,7 @@ public class MaintenanceListFragment extends BaseFragment
             @Override
             public boolean canDismiss(int position)
             {
-                Maintenance item = items.get(position);
+                Accounting item = items.get(position);
                 return item.state == 1;
             }
 
@@ -119,7 +117,7 @@ public class MaintenanceListFragment extends BaseFragment
         public ViewHolder onCreateViewHolder(ViewGroup parent, int type)
         {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.maint_list_item, parent, false);
+                    .inflate(R.layout.accounting_list_item, parent, false);
             return new ViewHolder(v);
         }
 
@@ -137,7 +135,7 @@ public class MaintenanceListFragment extends BaseFragment
 
         public void showUndo(int pos, View view)
         {
-            Maintenance item = items.get(pos);
+            Accounting item = items.get(pos);
             item.state = 0;
             if(item.extra instanceof ViewHolder)
             {
@@ -149,11 +147,11 @@ public class MaintenanceListFragment extends BaseFragment
 
         class ViewHolder extends RecyclerView.ViewHolder
         {
-            TextView maintTopText;
-            TextView maintCommentText;
-            TextView maintStatusText;
-            TextView maintQtyText;
-            TextView maintDurationText;
+            TextView accTopText;
+            TextView accCommentText;
+            TextView accCoinsText;
+            TextView accBanknotesText;
+            TextView accOverallText;
 
             LinearLayout deletedLay;
             Button undoBut;
@@ -161,52 +159,29 @@ public class MaintenanceListFragment extends BaseFragment
             public ViewHolder(View itemView)
             {
                 super(itemView);
-                maintTopText = (TextView) itemView.findViewById(R.id.maintlist_main_top);
-                maintCommentText = (TextView) itemView.findViewById(R.id.maintlist_comment);
-                maintDurationText = (TextView) itemView.findViewById(R.id.maintlist_duration);
-                maintStatusText = (TextView) itemView.findViewById(R.id.maintlist_status);
-                maintQtyText = (TextView) itemView.findViewById(R.id.maintlist_qty);
+                accTopText = (TextView) itemView.findViewById(R.id.acclist_acc_desc);
+                accCommentText = (TextView) itemView.findViewById(R.id.acclist_acc_comment);
+                accCoinsText = (TextView) itemView.findViewById(R.id.acclist_acc_qty1);
+                accBanknotesText = (TextView) itemView.findViewById(R.id.acclist_acc_qty2);
+                accOverallText = (TextView) itemView.findViewById(R.id.acclist_acc_qty3);
 
-                deletedLay = (LinearLayout) itemView.findViewById(R.id.maintlist_deleted_lay);
-                undoBut = (Button) itemView.findViewById(R.id.maintlist_undo_btn);
+                deletedLay = (LinearLayout) itemView.findViewById(R.id.acclist_deleted_lay);
+                undoBut = (Button) itemView.findViewById(R.id.acclist_undo_btn);
             }
 
-            public void populateData(Maintenance item, int pos)
+            public void populateData(Accounting item, int pos)
             {
                 item.extra = this;
                 if(item.state == 1)
                 {
                     deletedLay.setVisibility(View.GONE);
 
-                    StringBuilder buf = new StringBuilder(Helpers.smartDateTimeString(item.startDate));
-                    buf.append(" - ");
-                    Date endDate;
-                    if (item.finishDate == null)
-                    {
-                        buf.append(getResources().getString(R.string.now_label));
-                        endDate = new Date();
-                    } else
-                    {
-                        endDate = item.finishDate;
-                        buf.append(Helpers.smartDateTimeString(item.finishDate));
-                    }
-                    maintTopText.setText(buf.toString());
+                    accCoinsText.setText(Integer.toString(item.coinsQty));
+                    accBanknotesText.setText(Integer.toString(item.moneyQty));
+                    accOverallText.setText(Integer.toString(item.otherQty));
+                    accCommentText.setText(item.getComments());
 
-                    maintDurationText.setText(
-                            Helpers.deltaHoursMins(endDate.getTime() - item.startDate.getTime()));
-
-                    if (item.comments == null)
-                    {
-                        maintCommentText.setVisibility(View.GONE);
-                    } else
-                    {
-                        maintCommentText.setText(item.comments);
-                    }
-
-                    maintStatusText.setText(item.isOpen()
-                            ? R.string.status_opened : R.string.status_done);
-
-                    maintQtyText.setText(Integer.toString(item.replenishedQty));
+                    accTopText.setText(Helpers.smartDateTimeString(item.createdDate));
                 } else
                 {
                     showUndo(pos);
@@ -232,11 +207,11 @@ public class MaintenanceListFragment extends BaseFragment
                 notifyItemChanged(pos);
             }
 
-            void doActualDeletion(final int pos, final Maintenance delItem)
+            void doActualDeletion(final int pos, final Accounting delItem)
             {
                 for(int i = 0;i<items.size();i++)
                 {
-                    Maintenance item = items.get(i);
+                    Accounting item = items.get(i);
                     if (item.state == 0 && item.id == delItem.id)
                     {
                         remove(i);
@@ -244,7 +219,7 @@ public class MaintenanceListFragment extends BaseFragment
                 }
             }
 
-            void startCountDown(final int pos, final Maintenance item)
+            void startCountDown(final int pos, final Accounting item)
             {
                 AndroidContext.mainActivity.mainHandler.postDelayed(new Runnable()
                 {
@@ -261,15 +236,17 @@ public class MaintenanceListFragment extends BaseFragment
 
     private void updateData()
     {
-        items = MaintenanceFactory.instance.getMaintenanceList(machine.id);
+        items = AccountingFactory.instance.getAccountingList(machine.id);
         adapter.notifyDataSetChanged();
     }
 
-    private void doClick(Maintenance item, int pos)
+    private void doClick(Accounting item, int pos)
     {
-        MaintenanceFragment fragment = FragmentFactory.singleton.newMaintenanceFragment();
-        fragment.setMaintenance(item);
-        fragment.setOnDetachCallback(new Runnable()
+        final AccountingDialog dialog = FragmentFactory.singleton.newAccountingDialog();
+        dialog.setTitle(R.string.edit_accounting_title);
+        dialog.setMachine(machine);
+        dialog.setAccounting(item);
+        dialog.setCallback(new Runnable()
         {
             @Override
             public void run()
@@ -277,14 +254,14 @@ public class MaintenanceListFragment extends BaseFragment
                 updateData();
             }
         });
-        AndroidContext.mainActivity.openOnTop(fragment);
+        dialog.show(getFragmentManager(), "acc");
     }
 
     private void remove(int idx)
     {
-        Maintenance item = items.get(idx);
+        Accounting item = items.get(idx);
         item.state = 0;
-        MaintenanceFactory.instance.update(item);
+        AccountingFactory.instance.update(item);
         items.remove(idx);
         adapter.notifyItemRemoved(idx);
     }

@@ -82,13 +82,12 @@ public class MachineListFragment extends BaseFragment
         }));
 
         ItemClickSupport itemClicker = ItemClickSupport.addTo(listView);
-        itemClicker.setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener()
+        itemClicker.setOnItemClickListener(new ItemClickSupport.OnItemClickListener()
         {
             @Override
-            public boolean onItemLongClick(RecyclerView recyclerView, View view, int position, long l)
+            public void onItemClick(RecyclerView recyclerView, View view, int position, long l)
             {
                 onEditItemClicked(position);
-                return true;
             }
         });
     }

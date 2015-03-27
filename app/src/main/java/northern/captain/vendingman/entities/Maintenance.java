@@ -144,4 +144,6 @@ public class Maintenance implements IEntity
     {
         this.hasSupply = hasSupply;
     }
+
+    public boolean isOpen() { return STATUS_OPEN.equals(status);}
 }
