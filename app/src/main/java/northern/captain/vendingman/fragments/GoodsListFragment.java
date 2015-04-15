@@ -216,7 +216,7 @@ public class GoodsListFragment extends BaseFragment
         item.state = 0;
         GoodsFactory.instance.update(item);
         items.remove(idx);
-        adapter.notifyItemRemoved(idx);
+        adapter.notifyDataSetChanged();
     }
 
     private void onEditItemClicked(final int pos)

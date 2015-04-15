@@ -104,19 +104,19 @@ public class MainActivity extends ActionBarActivity
     {
         switch (number)
         {
-            case 1:
+            case FragmentFactory.FRAG_MAINTENANCE_LIST:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case FragmentFactory.FRAG_GOODS_LIST:
                 mTitle = getString(R.string.title_section2);
                 break;
-            case 3:
+            case FragmentFactory.FRAG_MACHINE_LIST:
                 mTitle = getString(R.string.title_section3);
                 break;
-            case 4:
+            case FragmentFactory.FRAG_ORDERS_LIST:
                 mTitle = getString(R.string.title_section4);
                 break;
-            case 5:
+            case FragmentFactory.FRAG_PREFERENCES:
                 mTitle = getString(R.string.title_section5);
                 break;
         }
@@ -237,4 +237,8 @@ public class MainActivity extends ActionBarActivity
         openOnTop(fragment);
     }
 
+    public Handler getMainHandler()
+    {
+        return mainHandler;
+    }
 }

@@ -6,12 +6,19 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Date;
 
+import northern.captain.vendingman.AndroidContext;
+import northern.captain.vendingman.R;
+
 /**
  * Created by leo on 21.11.14.
  */
 @DatabaseTable(tableName = "orders")
 public class Order implements IEntity
 {
+    public static final int STATE_OK = 1;
+    public static final int STATE_DONE = 2;
+    public static final int STATE_DELETED = 0;
+
     @DatabaseField(generatedId = true)
     public int id;
 
@@ -37,10 +44,15 @@ public class Order implements IEntity
     public Date sharedDate;
 
     /**
-     * State of the record. 1 - OK, 0 - deleted
+     * State of the record. 1 - OK, 0 - deleted, 2 - closed
      */
     @DatabaseField(columnName = "state", defaultValue = "1")
-    public int state = 1;
+    public int state = STATE_OK;
+
+    @DatabaseField(columnName = "replenished_qty", defaultValue = "0")
+    public int replenishedQty;
+
+    public Object extra;
 
     @Override
     public char getType()
@@ -77,6 +89,16 @@ public class Order implements IEntity
     public String getComments()
     {
         return comments;
+    }
+
+    public String getName()
+    {
+        return AndroidContext.mainActivity.getResources().getString(R.string.order_num) + id;
+    }
+
+    public boolean isOpen()
+    {
+        return state == STATE_OK;
     }
 
     public void setComments(String comments)

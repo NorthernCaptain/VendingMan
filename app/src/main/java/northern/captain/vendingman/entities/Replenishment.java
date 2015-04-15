@@ -15,9 +15,11 @@ import northern.captain.vendingman.entities.IEntityFactory;
 @DatabaseTable(tableName = "replenishment")
 public class Replenishment implements IEntity
 {
+    public static final int FLAG_MARKED = 1;
+    public static final int FLAG_ORDERED = 2;
+
     @DatabaseField(generatedId = true)
     public int id;
-
     /**
      * Ref to maintenance.id
      */
@@ -35,6 +37,9 @@ public class Replenishment implements IEntity
 
     @DatabaseField(columnName = "created_date", dataType = DataType.DATE_STRING)
     public Date createdDate = new Date();
+
+    @DatabaseField(columnName = "flags", defaultValue = "0")
+    public int flags;
 
     /**
      * State of the record. 1 - OK, 0 - deleted
@@ -102,5 +107,25 @@ public class Replenishment implements IEntity
     public void setCreatedDate(Date createdDate)
     {
         this.createdDate = createdDate;
+    }
+
+    public int getFlags()
+    {
+        return flags;
+    }
+
+    public void setFlags(int flags)
+    {
+        this.flags = flags;
+    }
+
+    public boolean isMarked()
+    {
+        return (flags & FLAG_MARKED) != 0;
+    }
+
+    public void setMarked(boolean mark)
+    {
+        flags = mark ? (flags | FLAG_MARKED) : (flags & ~FLAG_MARKED);
     }
 }

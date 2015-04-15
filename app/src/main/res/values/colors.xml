@@ -8,4 +8,9 @@
     <color name="bgGrayTrans">#dcb7b7b7</color>
     <color name="bgDarkGray">#979797</color>
     <color name="bgDarkGrayTrans">#e9979797</color>
+    <color name="markedInList">@color/md_green_100</color>
+    <color name="highlightedInList">@color/md_yellow_100</color>
+    <color name="alertedInList">@color/md_yellow_100</color>
+    <color name="alertTextColor">@color/md_red_600</color>
+    <color name="highlightTextColor">@color/md_blue_600</color>
 </resources>

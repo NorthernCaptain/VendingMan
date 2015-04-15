@@ -7,7 +7,8 @@
     android:background="@color/background_material_light"
     android:clickable="true">
     <TextView
-        android:text="@string/maintenance_cap"
+        android:id="@+id/order_num_lbl"
+        android:text="Order #343"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,11 +19,11 @@
         android:ellipsize="marquee"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="0dp"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:gravity="center"/>
 
     <LinearLayout
-        android:id="@+id/maint_header_lay"
+        android:id="@+id/order_header_lay"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -32,9 +33,9 @@
             android:orientation="vertical"
             android:layout_weight="1">
             <TextView
-                android:text="12 Apr 2015 12:05 - 12 Apr 2015 13:06 (01:01)"
+                android:text="12 Apr 2015 12:05"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/abc_primary_text_material_light"
                 android:layout_marginLeft="8dp"
@@ -44,7 +45,7 @@
                 android:layout_marginBottom="2dp"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:id="@+id/maint_dates_lb"
+                android:id="@+id/order_dates_lb"
                 />
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -65,7 +66,7 @@
                     android:textStyle="normal"
                     />
                 <TextView
-                    android:id="@+id/maint_status_lb"
+                    android:id="@+id/order_status_lb"
                     android:text="Done"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:layout_width="fill_parent"
@@ -87,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:text="@string/replenished_qty_cap"
+                    android:text="@string/ordered_qty_cap"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,7 +102,7 @@
                     android:textStyle="normal"
                     />
                 <TextView
-                    android:id="@+id/maint_repl_qty_lb"
+                    android:id="@+id/order_repl_qty_lb"
                     android:text="120"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:layout_width="fill_parent"
@@ -119,7 +120,16 @@
             </LinearLayout>
         </LinearLayout>
         <ImageButton
-            android:id="@+id/maint_stop"
+            android:id="@+id/order_share"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_action_share"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/circle4"/>
+        <ImageButton
+            android:id="@+id/order_stop"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_action_stop"
@@ -141,7 +151,7 @@
         android:layout_weight="1">
 
     <LinearLayout
-        android:id="@+id/maint_comment_lay"
+        android:id="@+id/order_comment_lay"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
@@ -166,7 +176,7 @@
             android:layout_height="match_parent"
             android:inputType="textMultiLine"
             android:ems="10"
-            android:id="@+id/maint_comment_edit"
+            android:id="@+id/order_comment_edit"
             android:hint="@string/comments_hint_cap"
             android:gravity="top"
             android:layout_marginLeft="5dp"
@@ -176,7 +186,7 @@
     </LinearLayout>
 
     <org.lucasr.twowayview.widget.TwoWayView
-        android:id="@+id/maint_selected_rview"
+        android:id="@+id/order_selected_rview"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -186,7 +196,7 @@
         />
 
     <org.lucasr.twowayview.widget.TwoWayView
-        android:id="@+id/maint_all_rview"
+        android:id="@+id/order_all_rview"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -209,37 +219,28 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
         <ImageButton
-            android:id="@+id/maint_all_but"
+            android:id="@+id/order_all_but"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:src="@drawable/ic_action_view_as_list"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="0dp"
-            android:background="@drawable/circle1"/>
+            android:background="@drawable/circle4"/>
         <ImageButton
-            android:id="@+id/maint_used_but"
+            android:id="@+id/order_used_but"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:src="@drawable/ic_action_add_to_queue"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="0dp"
-            android:background="@drawable/circle1"/>
+            android:background="@drawable/circle4"/>
         <ImageButton
-            android:id="@+id/maint_comment_but"
+            android:id="@+id/order_comment_but"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:src="@drawable/ic_action_event"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="0dp"
-            android:background="@drawable/circle1"/>
-        <ImageButton
-            android:id="@+id/maint_order_but"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:src="@drawable/ic_action_replay"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="0dp"

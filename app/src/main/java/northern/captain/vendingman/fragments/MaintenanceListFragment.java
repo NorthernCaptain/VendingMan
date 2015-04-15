@@ -268,7 +268,7 @@ public class MaintenanceListFragment extends BaseFragment
     private void doClick(Maintenance item, int pos)
     {
         MaintenanceFragment fragment = FragmentFactory.singleton.newMaintenanceFragment();
-        fragment.setMaintenance(item);
+        fragment.setMaintenance(item, machine);
         fragment.setOnDetachCallback(new Runnable()
         {
             @Override
@@ -286,7 +286,8 @@ public class MaintenanceListFragment extends BaseFragment
         item.state = 0;
         MaintenanceFactory.instance.update(item);
         items.remove(idx);
-        adapter.notifyItemRemoved(idx);
+//        adapter.notifyItemRemoved(idx);
+        adapter.notifyDataSetChanged();
     }
 
 }

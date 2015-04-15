@@ -47,7 +47,7 @@
     <string name="fab_income_cap">Add Income</string>
     <string name="fab_transfer_cap">Transfer between wallets</string>
     <string name="nentry_add_income_title">Add Income</string>
-    <string name="title_section4">Wallets</string>
+    <string name="title_section4">Supply Orders</string>
     <string name="last_correction_lbl">Last correction date:</string>
     <string name="last_cor_amount_lbl">Correction amount:</string>
     <string name="wallet_name_hint">Enter wallet name</string>
@@ -108,4 +108,10 @@
     <string name="edit_maintenance_dates_title">Edit maintenance dates</string>
     <string name="new_accounting_title">Create new account record</string>
     <string name="edit_accounting_title">Edit account record</string>
+    <string name="unlock_maintenance_title">Unlock maintenance for editing?</string>
+    <string name="unlock_order_title">Unlock order for editing?</string>
+    <string name="order_date_cap">Order date:</string>
+    <string name="order_num">Order #</string>
+    <string name="ordered_qty_cap">Ordered qty:</string>
+    <string name="close_order_title">Close this order?</string>
 </resources>

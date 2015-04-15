@@ -121,6 +121,7 @@ public class MachineOverviewFragment extends BaseFragment
             } else
             {
                 maintCommentText.setText(lastMaintenance.comments);
+                maintCommentText.setVisibility(View.VISIBLE);
             }
 
             maintStatusText.setText(lastMaintenance.isOpen()
@@ -188,7 +189,7 @@ public class MachineOverviewFragment extends BaseFragment
     void onMaintenanceClick()
     {
         MaintenanceFragment fragment = FragmentFactory.singleton.newMaintenanceFragment();
-        fragment.setMaintenance(lastMaintenance);
+        fragment.setMaintenance(lastMaintenance, machine);
         fragment.setOnDetachCallback(new Runnable()
         {
             @Override

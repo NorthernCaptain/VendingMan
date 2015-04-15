@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/mmitem_main_lay"
+        android:id="@+id/orditem_main_lay"
         android:orientation="vertical"
         android:background="@color/white">
 
         <TextView
-            android:id="@+id/mmitem_name"
-            android:text="Хозяйственные товары"
+            android:id="@+id/orditem_name"
+            android:text="Order #232"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +29,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:text="Long description of the item"
-            android:id="@+id/mmitem_description"
+            android:id="@+id/orditem_description"
             android:layout_marginBottom="3dp"
             android:textColor="@color/abc_secondary_text_material_light"
             android:ellipsize="marquee"
@@ -43,8 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                android:text="@string/maintenance_date_cap"
-                android:id="@+id/mmitem_lab1"
+                android:text="@string/status_cap"
+                android:id="@+id/orditem_lab1"
                 android:layout_marginBottom="3dp"
                 android:textColor="@color/highlightTextColor"
                 android:ellipsize="marquee"
@@ -56,8 +59,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
-                android:text="12 Mar 2014 13:43"
-                android:id="@+id/mmitem_maintenance_date"
+                android:text="@string/status_opened"
+                android:id="@+id/orditem_status"
                 android:layout_marginBottom="3dp"
                 android:textColor="@color/highlightTextColor"
                 android:ellipsize="marquee"
@@ -75,8 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:text="@string/accounting_date_cap"
-            android:id="@+id/mmitem_lab2"
+            android:text="@string/order_date_cap"
+            android:id="@+id/orditem_lab2"
             android:layout_marginBottom="3dp"
             android:ellipsize="marquee"
             android:singleLine="false"
@@ -88,7 +91,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
             android:text="12 Mar 2014 13:43"
-            android:id="@+id/mmitem_accounting_date"
+            android:id="@+id/orditem_date"
             android:layout_marginBottom="3dp"
             android:ellipsize="marquee"
             android:singleLine="false"
@@ -98,3 +101,37 @@
             android:gravity="right"/>
     </LinearLayout>
 </LinearLayout>
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/bgDarkGrayTrans"
+android:orientation="horizontal"
+android:id="@+id/orditem_deleted_lay"
+android:visibility="gone"
+    >
+
+<TextView
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="@string/item_deleted_cap"
+    android:id="@+id/textView3"
+    android:layout_gravity="center_vertical"
+    android:layout_weight="1"
+    android:textColor="@android:color/white"
+    android:layout_marginLeft="20dp"
+    />
+
+<Button
+    style="?android:attr/borderlessButtonStyle"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:text="@android:string/cancel"
+    android:id="@+id/orditem_undo_btn"
+    android:layout_gravity="center_vertical"
+    android:layout_marginRight="3dp"
+    android:background="@color/bgDarkGray"
+    android:maxWidth="110dp"
+    android:textColor="@color/md_orange_500"/>
+</LinearLayout>
+</FrameLayout>

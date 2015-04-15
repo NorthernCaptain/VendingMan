@@ -46,7 +46,7 @@
     <string name="fab_income_cap">Учесть Приход</string>
     <string name="fab_transfer_cap">Перевести между кошельками</string>
     <string name="nentry_add_income_title">Учесть приход</string>
-    <string name="title_section4">Кошельки</string>
+    <string name="title_section4">Заказы на поставку</string>
     <string name="last_cor_amount_lbl">Последняя сумма:</string>
     <string name="last_correction_lbl">Дата коррекции суммы:</string>
     <string name="wallet_name_cap">Название:</string>
@@ -94,4 +94,10 @@
     <string name="already_closed_toast">Обслуживание уже было завершено</string>
     <string name="balance_wallet_hint"></string>
     <string name="edit_accounting_title">Изменить аккаунтинг</string>
+    <string name="unlock_maintenance_title">Разрешить редактирование обслуживания?</string>
+    <string name="unlock_order_title">Разрешить редактирование заказа?</string>
+    <string name="order_date_cap">Дата заказа:</string>
+    <string name="order_num">Заказ #</string>
+    <string name="ordered_qty_cap">Заказано кол-во:</string>
+    <string name="close_order_title">Закрыть заказ?</string>
 </resources>

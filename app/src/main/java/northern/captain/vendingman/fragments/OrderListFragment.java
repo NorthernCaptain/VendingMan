@@ -19,15 +19,18 @@ import org.lucasr.twowayview.ItemClickSupport;
 import org.lucasr.twowayview.widget.DividerItemDecoration;
 import org.lucasr.twowayview.widget.TwoWayView;
 
+import java.util.Date;
 import java.util.List;
 
 import northern.captain.vendingman.AndroidContext;
 import northern.captain.vendingman.BaseFragment;
 import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.R;
-import northern.captain.vendingman.dialogs.MachineEditDialog;
-import northern.captain.vendingman.entities.VendingMachine;
-import northern.captain.vendingman.entities.VendingMachineFactory;
+import northern.captain.vendingman.dialogs.GoodsEditDialog;
+import northern.captain.vendingman.entities.Goods;
+import northern.captain.vendingman.entities.GoodsFactory;
+import northern.captain.vendingman.entities.Order;
+import northern.captain.vendingman.entities.OrderFactory;
 import northern.captain.vendingman.gui.SwipeDismissRecyclerViewTouchListener;
 import northern.captain.vendingman.tools.Helpers;
 
@@ -35,7 +38,7 @@ import northern.captain.vendingman.tools.Helpers;
  * Created by leo on 13.03.15.
  */
 @EFragment(R.layout.frag_goodsview)
-public class MachineListFragment extends BaseFragment
+public class OrderListFragment extends BaseFragment
 {
     @ViewById(R.id.fab_plus_fgoods)
     FloatingActionButton plusButton;
@@ -43,17 +46,15 @@ public class MachineListFragment extends BaseFragment
     @ViewById(R.id.fgoods_rview)
     TwoWayView listView;
 
-    List<VendingMachine> items;
+    List<Order> items;
 
     TheListAdapter adapter;
-
-    private static final long DELETION_DELAY = 3000;
 
     @AfterViews
     void initViews()
     {
         listView.setHasFixedSize(true);
-        items = VendingMachineFactory.instance.getVendingMachineAll();
+        items = OrderFactory.instance.getOrderList();
         final Drawable divider = getResources().getDrawable(R.drawable.divider1);
         listView.addItemDecoration(new DividerItemDecoration(divider));
 
@@ -64,8 +65,8 @@ public class MachineListFragment extends BaseFragment
             @Override
             public boolean canDismiss(int position)
             {
-                VendingMachine item = items.get(position);
-                return item.state == 1;
+                Order item = items.get(position);
+                return item.state != Order.STATE_DELETED;
             }
 
             @Override
@@ -98,7 +99,7 @@ public class MachineListFragment extends BaseFragment
         public ViewHolder onCreateViewHolder(ViewGroup parent, int type)
         {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.machine_list_item, parent, false);
+                    .inflate(R.layout.order_list_item, parent, false);
             return new ViewHolder(v);
         }
 
@@ -116,7 +117,7 @@ public class MachineListFragment extends BaseFragment
 
         public void showUndo(int pos, View view)
         {
-            VendingMachine item = items.get(pos);
+            Order item = items.get(pos);
             item.state = 0;
             if(item.extra instanceof ViewHolder)
             {
@@ -130,36 +131,38 @@ public class MachineListFragment extends BaseFragment
         {
             TextView descriptionText;
             TextView nameText;
-            TextView tagsText;
+            TextView dateText;
+            TextView statusText;
             LinearLayout deletedLay;
             Button undoBut;
 
             public ViewHolder(View itemView)
             {
                 super(itemView);
-                nameText = (TextView) itemView.findViewById(R.id.mitem_name);
-                tagsText = (TextView) itemView.findViewById(R.id.mitem_tags);
-                descriptionText = (TextView) itemView.findViewById(R.id.mitem_description);
-                deletedLay = (LinearLayout) itemView.findViewById(R.id.mitem_deleted_lay);
-                undoBut = (Button) itemView.findViewById(R.id.mitem_undo_btn);
+                nameText = (TextView) itemView.findViewById(R.id.orditem_name);
+                dateText = (TextView) itemView.findViewById(R.id.orditem_date);
+                descriptionText = (TextView) itemView.findViewById(R.id.orditem_description);
+                statusText = (TextView) itemView.findViewById(R.id.orditem_status);
+                deletedLay = (LinearLayout) itemView.findViewById(R.id.orditem_deleted_lay);
+                undoBut = (Button) itemView.findViewById(R.id.orditem_undo_btn);
             }
 
-            public void populateData(VendingMachine item, int pos)
+            public void populateData(Order item, int pos)
             {
                 item.extra = this;
-                if(item.state == 1)
+                if(item.state != Order.STATE_DELETED)
                 {
                     deletedLay.setVisibility(View.GONE);
-                    nameText.setText(item.name);
-                    if(Helpers.isNullOrEmpty(item.tags))
+                    nameText.setText(getResources().getString(R.string.order_num) + item.id);
+                    if(Helpers.isNullOrEmpty(item.comments))
                     {
-                        tagsText.setVisibility(View.GONE);
+                        descriptionText.setVisibility(View.GONE);
                     } else
                     {
-                        tagsText.setText(item.tags);
-                        tagsText.setVisibility(View.VISIBLE);
+                        descriptionText.setText(item.comments);
+                        descriptionText.setVisibility(View.VISIBLE);
                     }
-                    descriptionText.setText(item.description);
+                    statusText.setText(item.state == Order.STATE_OK ? R.string.status_opened : R.string.status_done);
                 } else
                 {
                     showUndo(pos);
@@ -186,11 +189,11 @@ public class MachineListFragment extends BaseFragment
                 notifyItemChanged(pos);
             }
 
-            void doActualDeletion(final int pos, final VendingMachine delItem)
+            void doActualDeletion(final int pos, final Order delItem)
             {
                 for(int i = 0;i<items.size();i++)
                 {
-                    VendingMachine item = items.get(i);
+                    Order item = items.get(i);
                     if (item.state == 0 && item.id == delItem.id)
                     {
                         remove(i);
@@ -198,7 +201,7 @@ public class MachineListFragment extends BaseFragment
                 }
             }
 
-            void startCountDown(final int pos, final VendingMachine item)
+            void startCountDown(final int pos, final Order item)
             {
                 AndroidContext.mainActivity.mainHandler.postDelayed(new Runnable()
                 {
@@ -207,64 +210,54 @@ public class MachineListFragment extends BaseFragment
                     {
                         doActualDeletion(pos, item);
                     }
-                }, DELETION_DELAY);
+                }, Helpers.DELETION_DELAY);
             }
         }
     }
 
     private void remove(int idx)
     {
-        VendingMachine item = items.get(idx);
-        item.state = 0;
-        VendingMachineFactory.instance.update(item);
+        Order item = items.get(idx);
+        item.state = Order.STATE_DELETED;
+        OrderFactory.instance.update(item);
         items.remove(idx);
         adapter.notifyDataSetChanged();
     }
 
     private void onEditItemClicked(final int pos)
     {
-        MachineEditDialog dialog = FragmentFactory.singleton.newVendingMachineEditDialog();
-        dialog.setItem(items.get(pos)).setCallback(new MachineEditDialog.VendingMachineEditCallback()
-        {
-            @Override
-            public void editedOk(VendingMachine item)
-            {
-                adapter.notifyItemChanged(pos);
-            }
-
-            @Override
-            public void editCancel()
-            {
-
-            }
-        });
-        dialog.show(getFragmentManager(), "goodsedit");
+        openOrder(items.get(pos));
     }
 
     private void updateData()
     {
-        items = VendingMachineFactory.instance.getVendingMachineAll();
+        items = OrderFactory.instance.getOrderList();
+    }
+
+    private void openOrder(Order order)
+    {
+        OrderFragment fragment = FragmentFactory.singleton.newOrderFragment();
+        fragment.setOrder(order);
+        fragment.setOnDetachCallback(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        AndroidContext.mainActivity.openOnTop(fragment);
     }
 
     @Click(R.id.fab_plus_fgoods)
     protected void onNewItemClicked()
     {
-        MachineEditDialog dialog = FragmentFactory.singleton.newVendingMachineEditDialog();
-        dialog.setCallback(new MachineEditDialog.VendingMachineEditCallback()
-        {
-            @Override
-            public void editedOk(VendingMachine item)
-            {
-                updateData();
-                adapter.notifyDataSetChanged();
-            }
+        Order newOrder = OrderFactory.instance.newItem();
+        OrderFactory.instance.insert(newOrder);
+        updateData();
+        adapter.notifyDataSetChanged();
 
-            @Override
-            public void editCancel()
-            {
-
-            }
-        });
-        dialog.show(getFragmentManager(), "goodsedit");
+        openOrder(newOrder);
     }
 }

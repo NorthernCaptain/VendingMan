@@ -36,7 +36,7 @@ public class SQLManager
     private String passwd = "";
 
     private static final String DB_NAME="vengingman.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
 
     private Helper helper;
 
@@ -79,10 +79,7 @@ public class SQLManager
             {
                 try
                 {
-                    database.execSQL("alter table expenses add state integer default 1");
-                    database.execSQL("alter table ecategory add state integer default 1");
-                    database.execSQL("alter table users add state integer default 1");
-                    database.execSQL("alter table wallet add state integer default 1");
+                    database.execSQL("alter table replenishment add flags integer default 0");
                 } catch (Exception e)
                 {
                     e.printStackTrace();
@@ -92,38 +89,7 @@ public class SQLManager
             {
                 try
                 {
-                    database.execSQL("alter table expenses add typ integer default -1");
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            if(oldVersion < 4)
-            {
-                try
-                {
-                    database.execSQL("alter table ecategory add typ integer default -1");
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            if(oldVersion < 5)
-            {
-                try
-                {
-                    database.execSQL("update expenses set amount = -amount where amount < 0");
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            if(oldVersion < 6)
-            {
-                try
-                {
-                    database.execSQL("alter table wallet add amount integer default 0");
-                    database.execSQL("alter table wallet add amount_date varchar default '2010-01-01 00:00:00.000000'");
+                    database.execSQL("alter table orders add replenished_qty integer default 0");
                 } catch (Exception e)
                 {
                     e.printStackTrace();
@@ -354,5 +320,39 @@ public class SQLManager
             }
         }
         return accDao;
+    }
+
+    private Dao<Order, Integer> orderDao;
+
+    public Dao<Order, Integer> getOrderDao()
+    {
+        if(orderDao == null)
+        {
+            try
+            {
+                orderDao = helper.getDao(Order.class);
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return orderDao;
+    }
+
+    private Dao<OrderDetail, Integer> orderDetailDao;
+
+    public Dao<OrderDetail, Integer> getOrderDetailDao()
+    {
+        if(orderDetailDao == null)
+        {
+            try
+            {
+                orderDetailDao = helper.getDao(OrderDetail.class);
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return orderDetailDao;
     }
 }

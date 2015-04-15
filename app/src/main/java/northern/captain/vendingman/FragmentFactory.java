@@ -26,6 +26,9 @@ import northern.captain.vendingman.fragments.MaintenanceFragment;
 import northern.captain.vendingman.fragments.MaintenanceFragment_;
 import northern.captain.vendingman.fragments.MaintenanceListFragment;
 import northern.captain.vendingman.fragments.MaintenanceListFragment_;
+import northern.captain.vendingman.fragments.OrderFragment;
+import northern.captain.vendingman.fragments.OrderFragment_;
+import northern.captain.vendingman.fragments.OrderListFragment_;
 import northern.captain.vendingman.fragments.PrefFragment;
 
 /**
@@ -33,6 +36,12 @@ import northern.captain.vendingman.fragments.PrefFragment;
  */
 public class FragmentFactory
 {
+    public static final int FRAG_MAINTENANCE_LIST = 1;
+    public static final int FRAG_GOODS_LIST = 2;
+    public static final int FRAG_MACHINE_LIST = 3;
+    public static final int FRAG_ORDERS_LIST = 4;
+    public static final int FRAG_PREFERENCES = 5;
+
     public static FragmentFactory singleton = new FragmentFactory();
     /**
      * The fragment argument representing the section number for this
@@ -49,7 +58,7 @@ public class FragmentFactory
         Fragment fragment;
         switch(sectionNumber)
         {
-            case 1:
+            case FRAG_MAINTENANCE_LIST:
             {
                 final MachineMaintenanceListFragment mfrag = new MachineMaintenanceListFragment_();
                 mfrag.setCallback(new MachineMaintenanceListFragment.VendingChosenCallback()
@@ -63,13 +72,16 @@ public class FragmentFactory
                 fragment = mfrag;
             }
                 break;
-            case 2:
+            case FRAG_GOODS_LIST:
                 fragment = new GoodsListFragment_();
                 break;
-            case 3:
+            case FRAG_MACHINE_LIST:
                 fragment = new MachineListFragment_();
                 break;
-            case 4:
+            case FRAG_ORDERS_LIST:
+                fragment = new OrderListFragment_();
+                break;
+            case FRAG_PREFERENCES:
                 fragment = new PrefFragment();
                 break;
             default:
@@ -101,6 +113,8 @@ public class FragmentFactory
     public MaintenanceFragment newMaintenanceFragment() { return new MaintenanceFragment_();}
 
     public MaintenanceListFragment newMaintenanceListFragment() { return new MaintenanceListFragment_();}
+
+    public OrderFragment newOrderFragment() { return  new OrderFragment_();}
 
     public AccountingListFragment newAccountingListFragment() { return new AccountingListFragment_();}
 

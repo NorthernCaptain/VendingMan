@@ -263,7 +263,7 @@ public class AccountingListFragment extends BaseFragment
         item.state = 0;
         AccountingFactory.instance.update(item);
         items.remove(idx);
-        adapter.notifyItemRemoved(idx);
+        adapter.notifyDataSetChanged();
     }
 
 }

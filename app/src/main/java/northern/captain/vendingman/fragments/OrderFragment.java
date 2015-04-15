@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Looper;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,6 @@ import org.lucasr.twowayview.widget.DividerItemDecoration;
 import org.lucasr.twowayview.widget.TwoWayView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,17 +31,14 @@ import northern.captain.vendingman.AndroidContext;
 import northern.captain.vendingman.BaseFragment;
 import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.R;
-import northern.captain.vendingman.dialogs.EnterMaintenanceDatesDialog;
 import northern.captain.vendingman.dialogs.EnterTextStringDialog;
 import northern.captain.vendingman.entities.Goods;
 import northern.captain.vendingman.entities.GoodsFactory;
-import northern.captain.vendingman.entities.Maintenance;
 import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.Order;
+import northern.captain.vendingman.entities.OrderDetail;
+import northern.captain.vendingman.entities.OrderDetailFactory;
 import northern.captain.vendingman.entities.OrderFactory;
-import northern.captain.vendingman.entities.Replenishment;
-import northern.captain.vendingman.entities.ReplenishmentFactory;
-import northern.captain.vendingman.entities.VendingMachine;
 import northern.captain.vendingman.gui.RepeatListenerAbstract;
 import northern.captain.vendingman.tools.Helpers;
 import northern.captain.vendingman.tools.MyToast;
@@ -52,31 +46,34 @@ import northern.captain.vendingman.tools.MyToast;
 /**
  * Created by leo on 3/20/15.
  */
-@EFragment(R.layout.frag_maintenance)
-public class MaintenanceFragment extends BaseFragment
+@EFragment(R.layout.frag_order)
+public class OrderFragment extends BaseFragment
 {
-    @ViewById(R.id.maint_dates_lb)
-    TextView maintTopText;
+    @ViewById(R.id.order_dates_lb)
+    TextView orderTopText;
 
-    @ViewById(R.id.maint_comment_edit)
-    EditText maintCommentEdit;
+    @ViewById(R.id.order_comment_edit)
+    EditText orderCommentEdit;
 
-    @ViewById(R.id.maint_status_lb)
-    TextView maintStatusText;
+    @ViewById(R.id.order_status_lb)
+    TextView orderStatusText;
 
-    @ViewById(R.id.maint_repl_qty_lb)
-    TextView maintQtyText;
+    @ViewById(R.id.order_repl_qty_lb)
+    TextView orderQtyText;
 
-    @ViewById(R.id.maint_all_rview)
+    @ViewById(R.id.order_num_lbl)
+    TextView orderNumText;
+
+    @ViewById(R.id.order_all_rview)
     TwoWayView listView;
 
-    @ViewById(R.id.maint_selected_rview)
+    @ViewById(R.id.order_selected_rview)
     TwoWayView usedListView;
 
-    @ViewById(R.id.maint_comment_lay)
+    @ViewById(R.id.order_comment_lay)
     View commentLay;
 
-    @ViewById(R.id.maint_stop)
+    @ViewById(R.id.order_stop)
     ImageButton stopBut;
 
     private boolean locked = false;
@@ -87,30 +84,27 @@ public class MaintenanceFragment extends BaseFragment
 
     private int mode = MODE_LIST_ALL;
 
-    private Maintenance maintenance;
-    private VendingMachine machine;
-
-    public void setMaintenance(Maintenance maintenance, VendingMachine machine)
+    private Order order;
+    public void setOrder(Order order)
     {
-        this.maintenance = maintenance;
-        this.machine = machine;
+        this.order = order;
     }
 
     List<Goods> goodsItems;
 
-    Set<ReplItem> itemsToUpdate = new HashSet<ReplItem>();
+    Set<OrderDetItem> itemsToUpdate = new HashSet<OrderDetItem>();
 
-    private class ReplItem
+    private class OrderDetItem
     {
         Goods goods;
-        Replenishment replenishment;
+        OrderDetail orderDetail;
         int qty;
         Object extra;
 
-        void setReplenishment(Replenishment repl)
+        void setOrderDetail(OrderDetail ord)
         {
-            replenishment = repl;
-            qty = repl == null ? 0 : replenishment.qty;
+            orderDetail = ord;
+            qty = ord == null ? 0 : orderDetail.qty;
         }
 
         void setGoods(Goods goods)
@@ -123,27 +117,24 @@ public class MaintenanceFragment extends BaseFragment
         {
             qty = newQty < 0 ? 0 : newQty;
 
-            if(replenishment == null)
+            if(orderDetail == null)
             {
-                replenishment = ReplenishmentFactory.instance.newItem();
-                replenishment.mainId = maintenance.id;
-                replenishment.goodsId = goods.id;
+                orderDetail = OrderDetailFactory.instance.newItem();
+                orderDetail.setOrderId(order.id);
+                orderDetail.goodsId = goods.id;
             }
 
-            replenishment.setQty(qty);
-            replenishment.state = qty > 0 ? 1 : 0;
-            replenishment.setMarked(qty > 0 ? replenishment.isMarked() : false);
+            orderDetail.setQty(qty);
+            orderDetail.state = qty > 0 ? 1 : 0;
             postUpdateItem(this);
         }
 
         void reverseMarked()
         {
-            replenishment.setMarked(!replenishment.isMarked());
-            ReplenishmentFactory.instance.update(replenishment);
         }
     }
 
-    private void postUpdateItem(ReplItem item)
+    private void postUpdateItem(OrderDetItem item)
     {
         itemsToUpdate.add(item);
         Handler handler = AndroidContext.mainActivity.getMainHandler();
@@ -157,16 +148,16 @@ public class MaintenanceFragment extends BaseFragment
         @Override
         public void run()
         {
-            for(ReplItem item : itemsToUpdate)
+            for(OrderDetItem item : itemsToUpdate)
             {
-                ReplenishmentFactory.instance.update(item.replenishment);
+                OrderDetailFactory.instance.update(item.orderDetail);
             }
         }
     };
 
 
-    List<ReplItem> allItems = new ArrayList<ReplItem>();
-    List<ReplItem> usedItems = new ArrayList<ReplItem>();
+    List<OrderDetItem> allItems = new ArrayList<OrderDetItem>();
+    List<OrderDetItem> usedItems = new ArrayList<OrderDetItem>();
 
     TheListAdapter adapter;
     TheListAdapter usedAdapter;
@@ -183,13 +174,14 @@ public class MaintenanceFragment extends BaseFragment
         highlightedColorBg = getResources().getColor(R.color.highlightedInList);
         markedColorBg = getResources().getColor(R.color.markedInList);
 
-        if(maintenance != null)
+        if(order != null)
         {
-            AndroidContext.mainActivity.getSupportActionBar().setTitle(machine.getName());
+//            AndroidContext.mainActivity.getSupportActionBar().setTitle(order.getComments());
 
-            maintCommentEdit.setText(maintenance.getComments());
+            orderNumText.setText(order.getName());
+            orderCommentEdit.setText(order.getComments());
 
-            if(maintenance.isOpen())
+            if(order.isOpen())
             {
                 mode = MODE_LIST_ALL;
                 locked = false;
@@ -236,41 +228,25 @@ public class MaintenanceFragment extends BaseFragment
 
     private void setHeader()
     {
-        StringBuilder buf = new StringBuilder(Helpers.smartDateTimeString(maintenance.startDate));
-        buf.append(" - ");
-        Date endDate;
-        if (maintenance.finishDate == null)
-        {
-            buf.append(getResources().getString(R.string.now_label));
-            endDate = new Date();
-        } else
-        {
-            endDate = maintenance.finishDate;
-            buf.append(Helpers.smartDateTimeString(maintenance.finishDate));
-        }
-        buf.append(" [");
-        buf.append(Helpers.deltaHoursMins(endDate.getTime() - maintenance.startDate.getTime()));
-        buf.append("]");
+        orderTopText.setText(Helpers.smartDateTimeString(order.createdDate));
 
-        maintTopText.setText(buf.toString());
+        orderQtyText.setText(Integer.toString(order.replenishedQty));
 
-        maintQtyText.setText(Integer.toString(maintenance.replenishedQty));
-
-        if(maintenance.isOpen())
+        if(order.isOpen())
         {
-            maintStatusText.setText(R.string.status_opened);
+            orderStatusText.setText(R.string.status_opened);
             stopBut.setImageResource(R.drawable.ic_action_stop);
         } else
         {
-            maintStatusText.setText(R.string.status_done);
+            orderStatusText.setText(R.string.status_done);
             stopBut.setImageResource(locked ? R.drawable.ic_action_secure
                                     : R.drawable.ic_action_not_secure);
-            stopBut.setBackgroundResource(locked ? R.drawable.circle2 : R.drawable.circle1);
+            stopBut.setBackgroundResource(locked ? R.drawable.circle2 : R.drawable.circle4);
         }
 
     }
 
-    private void addItemQty(ReplItem item, int deltaQty)
+    private void addItemQty(OrderDetItem item, int deltaQty)
     {
         if(locked) return;
 
@@ -278,9 +254,9 @@ public class MaintenanceFragment extends BaseFragment
         item.setQty(oldQty + deltaQty);
         if(oldQty != item.getQty())
         {
-            maintenance.replenishedQty += deltaQty;
-            MaintenanceFactory.instance.update(maintenance);
-            maintQtyText.setText(Integer.toString(maintenance.replenishedQty));
+            order.replenishedQty += deltaQty;
+            OrderFactory.instance.update(order);
+            orderQtyText.setText(Integer.toString(order.replenishedQty));
         }
     }
 
@@ -288,19 +264,19 @@ public class MaintenanceFragment extends BaseFragment
     {
         allItems.clear();
         this.goodsItems = GoodsFactory.instance.getGoodsAll();
-        List<Replenishment> replItems = ReplenishmentFactory.instance.getReplenishments(maintenance.getId());
+        List<OrderDetail> ordetItems = OrderDetailFactory.instance.getOrderDetails(order.getId());
 
-        maintenance.replenishedQty = 0;
+        order.replenishedQty = 0;
         for(Goods goods : goodsItems)
         {
-            ReplItem item = new ReplItem();
+            OrderDetItem item = new OrderDetItem();
             item.setGoods(goods);
-            for(Replenishment replenishment : replItems)
+            for(OrderDetail orderDetail : ordetItems)
             {
-                if(replenishment.goodsId == goods.id)
+                if(orderDetail.goodsId == goods.id)
                 {
-                    item.setReplenishment(replenishment);
-                    maintenance.replenishedQty += item.qty;
+                    item.setOrderDetail(orderDetail);
+                    order.replenishedQty += item.qty;
                     break;
                 }
             }
@@ -308,13 +284,13 @@ public class MaintenanceFragment extends BaseFragment
             allItems.add(item);
         }
 
-        MaintenanceFactory.instance.update(maintenance);
+        OrderFactory.instance.update(order);
     }
 
     private class TheListAdapter extends RecyclerView.Adapter<TheListAdapter.ViewHolder>
     {
-        private List<ReplItem> items;
-        public TheListAdapter(List<ReplItem> items)
+        private List<OrderDetItem> items;
+        public TheListAdapter(List<OrderDetItem> items)
         {
             this.items = items;
         }
@@ -323,7 +299,7 @@ public class MaintenanceFragment extends BaseFragment
         public ViewHolder onCreateViewHolder(ViewGroup parent, int type)
         {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.maint_goods_list_item, parent, false);
+                    .inflate(R.layout.order_goods_list_item, parent, false);
             return new ViewHolder(v);
         }
 
@@ -359,17 +335,17 @@ public class MaintenanceFragment extends BaseFragment
             ImageView okTick;
             LinearLayout layout;
 
-            ReplItem assignedItem;
+            OrderDetItem assignedItem;
 
             public ViewHolder(View itemView)
             {
                 super(itemView);
-                nameText = (TextView) itemView.findViewById(R.id.maint_gitem_name);
-                qtyText = (TextView) itemView.findViewById(R.id.maint_gitem_lineqty);
-                buttonMinus = (ImageButton) itemView.findViewById(R.id.maint_gitem_minus);
-                buttonPlus = (ImageButton) itemView.findViewById(R.id.maint_gitem_plus);
-                okTick = (ImageView) itemView.findViewById(R.id.maint_gitem_ok_tick);
-                layout = (LinearLayout) itemView.findViewById(R.id.maint_gitem_main_lay);
+                nameText = (TextView) itemView.findViewById(R.id.order_item_name);
+                qtyText = (TextView) itemView.findViewById(R.id.order_item_lineqty);
+                buttonMinus = (ImageButton) itemView.findViewById(R.id.order_item_minus);
+                buttonPlus = (ImageButton) itemView.findViewById(R.id.order_item_plus);
+                okTick = (ImageView) itemView.findViewById(R.id.order_item_ok_tick);
+                layout = (LinearLayout) itemView.findViewById(R.id.order_item_main_lay);
 
                 RepeatListenerAbstract repeater = new RepeatListenerAbstract()
                 {
@@ -385,7 +361,7 @@ public class MaintenanceFragment extends BaseFragment
                 nameText.setOnClickListener(this);
             }
 
-            public void populateData(ReplItem item, int pos)
+            public void populateData(OrderDetItem item, int pos)
             {
                 if(assignedItem != null)
                 {
@@ -397,15 +373,7 @@ public class MaintenanceFragment extends BaseFragment
                 item.extra = this;
                 nameText.setText(item.goods.name);
                 qtyText.setText(Integer.toString(qty));
-                if(item.replenishment != null && item.replenishment.isMarked())
-                {
-                    layout.setBackgroundColor(markedColorBg);
-                    okTick.setVisibility(View.VISIBLE);
-                } else
-                {
-                    layout.setBackgroundColor(qty > 0 ? highlightedColorBg : normalColorBg);
-                    okTick.setVisibility(View.INVISIBLE);
-                }
+                layout.setBackgroundColor(qty > 0 ? highlightedColorBg : normalColorBg);
             }
 
             @Override
@@ -416,7 +384,7 @@ public class MaintenanceFragment extends BaseFragment
                 if(view == nameText)
                 {
                     int pos = findPosByExtra(this);
-                    ReplItem item = items.get(pos);
+                    OrderDetItem item = items.get(pos);
                     if(item.qty > 0)
                     {
                         item.reverseMarked();
@@ -439,7 +407,7 @@ public class MaintenanceFragment extends BaseFragment
                                 int qty = Integer.parseInt(text.trim());
 
                                 int pos = findPosByExtra(ViewHolder.this);
-                                ReplItem item = items.get(pos);
+                                OrderDetItem item = items.get(pos);
 
                                 int delta = qty - item.getQty();
                                 addItemQty(item, delta);
@@ -461,7 +429,7 @@ public class MaintenanceFragment extends BaseFragment
                 if(view == buttonMinus) delta = -1;
 
                 int pos = findPosByExtra(this);
-                ReplItem item = items.get(pos);
+                OrderDetItem item = items.get(pos);
 
                 addItemQty(item, delta);
                 notifyItemChanged(pos);
@@ -471,19 +439,19 @@ public class MaintenanceFragment extends BaseFragment
 
     private void saveData()
     {
-        String comments = maintCommentEdit.getText().toString().trim();
-        if(comments != null && maintenance!= null
-           && !comments.equals(maintenance.getComments()))
+        String comments = orderCommentEdit.getText().toString().trim();
+        if(comments != null && order != null
+           && !comments.equals(order.getComments()))
         {
-            maintenance.setComments(comments);
-            MaintenanceFactory.instance.update(maintenance);
+            order.setComments(comments);
+            OrderFactory.instance.update(order);
         }
     }
 
     private void updateData()
     {
         usedItems.clear();
-        for(ReplItem  item : allItems)
+        for(OrderDetItem item : allItems)
         {
             if(item.getQty() > 0)
             {
@@ -520,34 +488,34 @@ public class MaintenanceFragment extends BaseFragment
         }
     }
 
-    @Click(R.id.maint_all_but)
+    @Click(R.id.order_all_but)
     void onAllListClick()
     {
         setMode(MODE_LIST_ALL);
     }
 
-    @Click(R.id.maint_used_but)
+    @Click(R.id.order_used_but)
     void onUsedListClick()
     {
         setMode(MODE_LIST_USED);
     }
 
-    @Click(R.id.maint_comment_but)
+    @Click(R.id.order_comment_but)
     void onCommentViewClick()
     {
         setMode(MODE_COMMENTS);
     }
 
-    @Click(R.id.maint_stop)
+    @Click(R.id.order_stop)
     void onStopClick()
     {
-        if(!maintenance.isOpen())
+        if(!order.isOpen())
         {
             if(locked)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                builder.setTitle(R.string.close_cap).setMessage(R.string.unlock_maintenance_title)
+                builder.setTitle(R.string.close_cap).setMessage(R.string.unlock_order_title)
                         .setCancelable(true).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -570,13 +538,13 @@ public class MaintenanceFragment extends BaseFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle(R.string.close_cap).setMessage(R.string.close_maintenance_title)
+        builder.setTitle(R.string.close_cap).setMessage(R.string.close_order_title)
                 .setCancelable(true).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialogInterface, int i)
             {
-                closeMaintenance();
+                closeOrder();
             }
         })
         .setNegativeButton(android.R.string.cancel, null);
@@ -584,45 +552,31 @@ public class MaintenanceFragment extends BaseFragment
         builder.show();
     }
 
-    @Click(R.id.maint_header_lay)
+    @Click(R.id.order_header_lay)
     void onHeaderClick()
     {
-        if(!maintenance.isOpen() && !locked)
+        if(!order.isOpen() && !locked)
         {
-            EnterMaintenanceDatesDialog dialog = FragmentFactory.singleton.newEnterMaintenanceDatesDialog();
-            dialog.setMaintenance(maintenance);
-            dialog.setTitle(R.string.edit_maintenance_dates_title);
-            dialog.setCallback(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setHeader();
-                }
-            });
-            dialog.show(getFragmentManager(), "edates");
+//            EnterMaintenanceDatesDialog dialog = FragmentFactory.singleton.newEnterMaintenanceDatesDialog();
+//            dialog.setMaintenance(order);
+//            dialog.setTitle(R.string.edit_maintenance_dates_title);
+//            dialog.setCallback(new Runnable()
+//            {
+//                @Override
+//                public void run()
+//                {
+//                    setHeader();
+//                }
+//            });
+//            dialog.show(getFragmentManager(), "edates");
             return;
         }
     }
 
-    @Click(R.id.maint_order_but)
-    void onOrderClick()
+    private void closeOrder()
     {
-        Order order = OrderFactory.instance.getLatestOrder();
-        if(order == null)
-        {
-            order = OrderFactory.instance.newItem();
-            OrderFactory.instance.insert(order);
-        }
-
-        OrderFragment fragment = FragmentFactory.singleton.newOrderFragment();
-        fragment.setOrder(order);
-        AndroidContext.mainActivity.openOnTop(fragment);
-    }
-
-    private void closeMaintenance()
-    {
-        MaintenanceFactory.instance.close(maintenance);
+        order.state = Order.STATE_DONE;
+        OrderFactory.instance.update(order);
         locked = true;
         setHeader();
     }
@@ -631,7 +585,7 @@ public class MaintenanceFragment extends BaseFragment
     public void onDetach()
     {
         saveData();
-        AndroidContext.mainActivity.getSupportActionBar().setTitle(R.string.title_section1);
+//        AndroidContext.mainActivity.getSupportActionBar().setTitle(R.string.title_section1);
         super.onDetach();
     }
 }
