@@ -41,6 +41,8 @@ import northern.captain.vendingman.entities.GoodsFactory;
 import northern.captain.vendingman.entities.Maintenance;
 import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.Order;
+import northern.captain.vendingman.entities.OrderDetail;
+import northern.captain.vendingman.entities.OrderDetailFactory;
 import northern.captain.vendingman.entities.OrderFactory;
 import northern.captain.vendingman.entities.Replenishment;
 import northern.captain.vendingman.entities.ReplenishmentFactory;
@@ -350,7 +352,7 @@ public class MaintenanceFragment extends BaseFragment
             return 0;
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+        class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener
         {
             TextView nameText;
             TextView qtyText;
@@ -383,6 +385,7 @@ public class MaintenanceFragment extends BaseFragment
                 buttonPlus.setOnTouchListener(repeater);
                 qtyText.setOnClickListener(this);
                 nameText.setOnClickListener(this);
+                nameText.setOnLongClickListener(this);
             }
 
             public void populateData(ReplItem item, int pos)
@@ -465,6 +468,18 @@ public class MaintenanceFragment extends BaseFragment
 
                 addItemQty(item, delta);
                 notifyItemChanged(pos);
+            }
+
+            @Override
+            public boolean onLongClick(View view)
+            {
+                if(locked) return false;
+
+                int pos = findPosByExtra(this);
+                ReplItem item = items.get(pos);
+
+                askForOrder(item.goods);
+                return true;
             }
         }
     }
@@ -633,5 +648,58 @@ public class MaintenanceFragment extends BaseFragment
         saveData();
         AndroidContext.mainActivity.getSupportActionBar().setTitle(R.string.title_section1);
         super.onDetach();
+    }
+
+    private void askForOrder(final Goods goods)
+    {
+        EnterTextStringDialog dialog = FragmentFactory.singleton.newTextStringDialog();
+        dialog.setTitle(R.string.enter_order_qty_cap);
+        dialog.setCallback(new EnterTextStringDialog.ITextCallback()
+        {
+            @Override
+            public boolean textEntered(String text)
+            {
+                try
+                {
+                    int qty = Integer.parseInt(text.trim());
+                    addOrderLineQty(goods, qty);
+                } catch(Exception ex)
+                {
+                    MyToast.toast(R.string.err_wrong_expression);
+                    return false;
+                }
+                return true;
+            }
+        });
+        dialog.show(getFragmentManager(), "qty");
+    }
+
+    private void addOrderLineQty(Goods goods, int qty)
+    {
+        Order order = OrderFactory.instance.getLatestOrder();
+        if(order == null)
+        {
+            order = OrderFactory.instance.newItem();
+            OrderFactory.instance.insert(order);
+        }
+
+        List<OrderDetail> details = OrderDetailFactory.instance.getOrderDetails(order.id);
+
+        OrderDetail ourDetail = null;
+        for(OrderDetail detail : details)
+        {
+            if(detail.goodsId == goods.id)
+            {
+                ourDetail = detail;
+                break;
+            }
+        }
+
+        if(ourDetail == null) ourDetail = OrderDetailFactory.instance.newItem();
+
+        ourDetail.setQty(qty);
+        ourDetail.setOrderId(order.id);
+        ourDetail.setGoodsId(goods.id);
+        OrderDetailFactory.instance.update(ourDetail);
     }
 }

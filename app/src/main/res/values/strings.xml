@@ -114,4 +114,5 @@
     <string name="order_num">Order #</string>
     <string name="ordered_qty_cap">Ordered qty:</string>
     <string name="close_order_title">Close this order?</string>
+    <string name="enter_order_qty_cap">Enter quantity to order</string>
 </resources>

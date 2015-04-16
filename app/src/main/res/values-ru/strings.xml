@@ -100,4 +100,5 @@
     <string name="order_num">Заказ #</string>
     <string name="ordered_qty_cap">Заказано кол-во:</string>
     <string name="close_order_title">Закрыть заказ?</string>
+    <string name="enter_order_qty_cap">Введите кол-во для заказа</string>
 </resources>

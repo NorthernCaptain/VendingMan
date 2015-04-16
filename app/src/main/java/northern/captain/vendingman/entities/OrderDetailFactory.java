@@ -5,6 +5,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +23,9 @@ public class OrderDetailFactory implements IEntityFactory<OrderDetail>
     @Override
     public OrderDetail newItem()
     {
-        return new OrderDetail();
+        OrderDetail detail = new OrderDetail();
+        detail.setCreatedDate(new Date());
+        return detail;
     }
 
     @Override
