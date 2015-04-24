@@ -5,6 +5,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -121,4 +122,29 @@ public class AccountingFactory implements IEntityFactory<Accounting>
         return new ArrayList<Accounting>();
     }
 
+    public List<Accounting> getAccountingListByDates(int machineId, Date from, Date to)
+    {
+        try
+        {
+            Dao<Accounting, Integer> dao = SQLManager.instance.getAccountingDao();
+
+            QueryBuilder<Accounting, Integer> query = dao.queryBuilder();
+
+            query.where().eq("machine_id", machineId).and().eq("state", 1)
+                    .and().ge("created_date", from).and().lt("created_date", to);
+            query.orderBy("created_date", false);
+
+            List<Accounting> list = dao.query(query.prepare());
+            if(list != null && !list.isEmpty())
+            {
+                return list;
+            }
+        }
+        catch(SQLException ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return new ArrayList<Accounting>();
+    }
 }

@@ -115,4 +115,22 @@
     <string name="ordered_qty_cap">Ordered qty:</string>
     <string name="close_order_title">Close this order?</string>
     <string name="enter_order_qty_cap">Enter quantity to order</string>
+    <string name="open_xls">Open report with</string>
+    <string name="rep_order_header">Supply Order number %1$d of %2$s</string>
+    <string name="rep_goods_name">Goods name</string>
+    <string name="rep_quiantity">Quantity</string>
+
+    <string name="rep_maintenance_head">Maintenance report for %1$s</string>
+    <string name="rep_maintenance_period">Period from %1$s to %2$s</string>
+    <string name="rep_maintenance_repl">Replenishment info</string>
+    <string name="rep_total">Total</string>
+    <string name="enter_months_title">Choose desired period of time</string>
+    <string name="choose_cur_month">%1$s (Current month)</string>
+    <string name="choose_prev_month">%1$s (Previous month)</string>
+    <string name="choose_preprev_month">%1$s (Two months back)</string>
+    <string name="rep_accounting_repl">Accounting info</string>
+    <string name="rep_accounting_count_total">Count total</string>
+    <string name="rep_accounting_count_coins">Count coins</string>
+    <string name="rep_accounting_count_banknotes">Count banknotes</string>
+    <string name="rep_accounting_what">Accouning type</string>
 </resources>

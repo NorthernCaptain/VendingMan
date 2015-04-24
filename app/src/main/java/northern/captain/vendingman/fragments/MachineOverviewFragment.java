@@ -19,12 +19,14 @@ import northern.captain.vendingman.FragmentFactory;
 import northern.captain.vendingman.MainActivity_;
 import northern.captain.vendingman.R;
 import northern.captain.vendingman.dialogs.AccountingDialog;
+import northern.captain.vendingman.dialogs.EnterMonthDatesDialog;
 import northern.captain.vendingman.entities.Accounting;
 import northern.captain.vendingman.entities.AccountingFactory;
 import northern.captain.vendingman.entities.Maintenance;
 import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.VendingMachine;
 import northern.captain.vendingman.entities.VendingMachineFactory;
+import northern.captain.vendingman.reports.MaintenanceReport;
 import northern.captain.vendingman.tools.Helpers;
 import northern.captain.vendingman.tools.MyToast;
 
@@ -287,5 +289,23 @@ public class MachineOverviewFragment extends BaseFragment
             });
             dialog.show(getFragmentManager(), "acc");
         }
+    }
+
+    @Click(R.id.machinecard_view_main_share)
+    void onShareMachineClick()
+    {
+        final EnterMonthDatesDialog dialog = FragmentFactory.singleton.newEnterMonthDatesDialog();
+        dialog.setTitle(R.string.enter_months_title);
+
+        dialog.setCallback(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                MaintenanceReport report = new MaintenanceReport(machine, dialog.getFromDate(), dialog.getToDate());
+                report.build();
+            }
+        });
+        dialog.show(getFragmentManager(), "dates");
     }
 }

@@ -101,4 +101,21 @@
     <string name="ordered_qty_cap">Заказано кол-во:</string>
     <string name="close_order_title">Закрыть заказ?</string>
     <string name="enter_order_qty_cap">Введите кол-во для заказа</string>
+    <string name="open_xls">Открыть отчет с помощью</string>
+    <string name="rep_order_header">Заказ на поставку N%1$d от %2$s</string>
+    <string name="rep_goods_name">Название товара</string>
+    <string name="rep_quiantity">Кол-во</string>
+    <string name="rep_maintenance_head">Отчет по обслуживанию автомата %1$s</string>
+    <string name="rep_maintenance_period">За период с %1$s до %2$s</string>
+    <string name="rep_maintenance_repl">Пополнение автомата:</string>
+    <string name="rep_total">Итого</string>
+    <string name="enter_months_title">Выбрать диапазон дат</string>
+    <string name="choose_cur_month">%1$s (Текущий месяц)</string>
+    <string name="choose_prev_month">%1$s (Предидущий месяц)</string>
+    <string name="choose_preprev_month">%1$s (2 месяца назад)</string>
+    <string name="rep_accounting_repl">Аккаунтинг автомата:</string>
+    <string name="rep_accounting_count_total">Общий счетчик</string>
+    <string name="rep_accounting_count_coins">Счетчик монет</string>
+    <string name="rep_accounting_count_banknotes">Счетчик банкнот</string>
+    <string name="rep_accounting_what">Тип счетчика</string>
 </resources>

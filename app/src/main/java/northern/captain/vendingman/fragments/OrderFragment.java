@@ -34,12 +34,13 @@ import northern.captain.vendingman.R;
 import northern.captain.vendingman.dialogs.EnterTextStringDialog;
 import northern.captain.vendingman.entities.Goods;
 import northern.captain.vendingman.entities.GoodsFactory;
-import northern.captain.vendingman.entities.MaintenanceFactory;
 import northern.captain.vendingman.entities.Order;
+import northern.captain.vendingman.entities.OrderDetItem;
 import northern.captain.vendingman.entities.OrderDetail;
 import northern.captain.vendingman.entities.OrderDetailFactory;
 import northern.captain.vendingman.entities.OrderFactory;
 import northern.captain.vendingman.gui.RepeatListenerAbstract;
+import northern.captain.vendingman.reports.OrderReport;
 import northern.captain.vendingman.tools.Helpers;
 import northern.captain.vendingman.tools.MyToast;
 
@@ -92,27 +93,10 @@ public class OrderFragment extends BaseFragment
 
     List<Goods> goodsItems;
 
-    Set<OrderDetItem> itemsToUpdate = new HashSet<OrderDetItem>();
+    Set<OrderDetItemVisual> itemsToUpdate = new HashSet<OrderDetItemVisual>();
 
-    private class OrderDetItem
+    public class OrderDetItemVisual extends OrderDetItem
     {
-        Goods goods;
-        OrderDetail orderDetail;
-        int qty;
-        Object extra;
-
-        void setOrderDetail(OrderDetail ord)
-        {
-            orderDetail = ord;
-            qty = ord == null ? 0 : orderDetail.qty;
-        }
-
-        void setGoods(Goods goods)
-        {
-            this.goods = goods;
-        }
-
-        int getQty() { return qty;}
         void setQty(int newQty)
         {
             qty = newQty < 0 ? 0 : newQty;
@@ -134,7 +118,7 @@ public class OrderFragment extends BaseFragment
         }
     }
 
-    private void postUpdateItem(OrderDetItem item)
+    private void postUpdateItem(OrderDetItemVisual item)
     {
         itemsToUpdate.add(item);
         Handler handler = AndroidContext.mainActivity.getMainHandler();
@@ -148,7 +132,7 @@ public class OrderFragment extends BaseFragment
         @Override
         public void run()
         {
-            for(OrderDetItem item : itemsToUpdate)
+            for(OrderDetItemVisual item : itemsToUpdate)
             {
                 OrderDetailFactory.instance.update(item.orderDetail);
             }
@@ -156,8 +140,8 @@ public class OrderFragment extends BaseFragment
     };
 
 
-    List<OrderDetItem> allItems = new ArrayList<OrderDetItem>();
-    List<OrderDetItem> usedItems = new ArrayList<OrderDetItem>();
+    List<OrderDetItemVisual> allItems = new ArrayList<OrderDetItemVisual>();
+    List<OrderDetItemVisual> usedItems = new ArrayList<OrderDetItemVisual>();
 
     TheListAdapter adapter;
     TheListAdapter usedAdapter;
@@ -246,7 +230,7 @@ public class OrderFragment extends BaseFragment
 
     }
 
-    private void addItemQty(OrderDetItem item, int deltaQty)
+    private void addItemQty(OrderDetItemVisual item, int deltaQty)
     {
         if(locked) return;
 
@@ -269,7 +253,7 @@ public class OrderFragment extends BaseFragment
         order.replenishedQty = 0;
         for(Goods goods : goodsItems)
         {
-            OrderDetItem item = new OrderDetItem();
+            OrderDetItemVisual item = new OrderDetItemVisual();
             item.setGoods(goods);
             for(OrderDetail orderDetail : ordetItems)
             {
@@ -289,8 +273,8 @@ public class OrderFragment extends BaseFragment
 
     private class TheListAdapter extends RecyclerView.Adapter<TheListAdapter.ViewHolder>
     {
-        private List<OrderDetItem> items;
-        public TheListAdapter(List<OrderDetItem> items)
+        private List<OrderDetItemVisual> items;
+        public TheListAdapter(List<OrderDetItemVisual> items)
         {
             this.items = items;
         }
@@ -335,7 +319,7 @@ public class OrderFragment extends BaseFragment
             ImageView okTick;
             LinearLayout layout;
 
-            OrderDetItem assignedItem;
+            OrderDetItemVisual assignedItem;
 
             public ViewHolder(View itemView)
             {
@@ -361,7 +345,7 @@ public class OrderFragment extends BaseFragment
                 nameText.setOnClickListener(this);
             }
 
-            public void populateData(OrderDetItem item, int pos)
+            public void populateData(OrderDetItemVisual item, int pos)
             {
                 if(assignedItem != null)
                 {
@@ -384,7 +368,7 @@ public class OrderFragment extends BaseFragment
                 if(view == nameText)
                 {
                     int pos = findPosByExtra(this);
-                    OrderDetItem item = items.get(pos);
+                    OrderDetItemVisual item = items.get(pos);
                     if(item.qty > 0)
                     {
                         item.reverseMarked();
@@ -407,7 +391,7 @@ public class OrderFragment extends BaseFragment
                                 int qty = Integer.parseInt(text.trim());
 
                                 int pos = findPosByExtra(ViewHolder.this);
-                                OrderDetItem item = items.get(pos);
+                                OrderDetItemVisual item = items.get(pos);
 
                                 int delta = qty - item.getQty();
                                 addItemQty(item, delta);
@@ -429,7 +413,7 @@ public class OrderFragment extends BaseFragment
                 if(view == buttonMinus) delta = -1;
 
                 int pos = findPosByExtra(this);
-                OrderDetItem item = items.get(pos);
+                OrderDetItemVisual item = items.get(pos);
 
                 addItemQty(item, delta);
                 notifyItemChanged(pos);
@@ -451,7 +435,7 @@ public class OrderFragment extends BaseFragment
     private void updateData()
     {
         usedItems.clear();
-        for(OrderDetItem item : allItems)
+        for(OrderDetItemVisual item : allItems)
         {
             if(item.getQty() > 0)
             {
@@ -571,6 +555,14 @@ public class OrderFragment extends BaseFragment
 //            dialog.show(getFragmentManager(), "edates");
             return;
         }
+    }
+
+    @Click(R.id.order_share)
+    void onShareOrderClick()
+    {
+        updateData();
+        OrderReport report = new OrderReport(order, usedItems);
+        report.build();
     }
 
     private void closeOrder()

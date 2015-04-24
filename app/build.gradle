@@ -55,6 +55,7 @@ dependencies {
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile 'com.loopj.android:android-async-http:1.4.6'
     compile 'joda-time:joda-time:2.6'
+    compile 'net.sourceforge.jexcelapi:jxl:2.6.12'
 }
 
 apt {

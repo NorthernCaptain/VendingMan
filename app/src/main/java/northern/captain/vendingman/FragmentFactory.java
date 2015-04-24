@@ -7,6 +7,8 @@ import northern.captain.vendingman.dialogs.AccountingDialog;
 import northern.captain.vendingman.dialogs.AccountingDialog_;
 import northern.captain.vendingman.dialogs.EnterMaintenanceDatesDialog;
 import northern.captain.vendingman.dialogs.EnterMaintenanceDatesDialog_;
+import northern.captain.vendingman.dialogs.EnterMonthDatesDialog;
+import northern.captain.vendingman.dialogs.EnterMonthDatesDialog_;
 import northern.captain.vendingman.dialogs.EnterTextStringDialog;
 import northern.captain.vendingman.dialogs.EnterTextStringDialog_;
 import northern.captain.vendingman.dialogs.GoodsEditDialog;
@@ -107,6 +109,8 @@ public class FragmentFactory
     {
         return new MachineEditDialog_();
     }
+
+    public EnterMonthDatesDialog newEnterMonthDatesDialog() { return new EnterMonthDatesDialog_(); }
 
     public MachineOverviewFragment newMachineOverviewFrag() { return new MachineOverviewFragment_();}
 
