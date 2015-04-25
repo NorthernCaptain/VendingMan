@@ -114,11 +114,11 @@ public class ReplenishmentFactory implements IEntityFactory<Replenishment>
                             "maintenance.start_date " +
                             "from maintenance join replenishment on maintenance.id = replenishment.main_id " +
                             "join goods on replenishment.goods_id = goods.id " +
-                            "where replenishment.qty>0 and maintenance.machine_id=");
+                            "where maintenance.state = 1 and replenishment.qty>0 and maintenance.machine_id=");
             buf.append(machineId);
             buf.append(" and maintenance.start_date>='");
             buf.append(AndroidContext.sqlFormat.format(from));
-            buf.append("' and maintenance.finish_date<'");
+            buf.append("' and maintenance.start_date<'");
             buf.append(AndroidContext.sqlFormat.format(to));
             buf.append("'");
 

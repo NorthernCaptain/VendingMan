@@ -105,7 +105,7 @@ public class MaintenanceReport extends ReportBase
 
             List<ReplGoodsView> replRaw =
                     ReplenishmentFactory.instance.getReplenishmentsForMachine(machine.id,
-                            new Date(from.getTime() - 86400L * 60000L), to);
+                            from, to);
 
             groupRaw(replRaw);
 
