@@ -56,7 +56,7 @@ public class OrderReport extends ReportBase
                 setAutoSize(sheet, i);
             }
 
-            String header = String.format(res.getString(R.string.rep_order_header), order.id, AndroidContext.dateFormat.format(order.createdDate));
+            String header = String.format(res.getString(R.string.rep_order_header), order.id, AndroidContext.repDateFormat.format(order.createdDate));
             Label label = new Label(0, 0, header, new WritableCellFormat(new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD)));
 
             sheet.addCell(label);

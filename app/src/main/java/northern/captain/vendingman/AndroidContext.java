@@ -12,6 +12,7 @@ public class AndroidContext
 {
     public static final int VERSION=100;
 
+    public static DateFormat repDateFormat = new SimpleDateFormat("dd.MM.yy");
     public static DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
     public static DateFormat timeFormat = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
     public static DateFormat monthFormat = new SimpleDateFormat("MMM");

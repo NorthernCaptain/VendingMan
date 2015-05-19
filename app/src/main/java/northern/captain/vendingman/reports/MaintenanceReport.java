@@ -2,6 +2,9 @@ package northern.captain.vendingman.reports;
 
 import android.content.res.Resources;
 
+import org.joda.time.*;
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +73,7 @@ public class MaintenanceReport extends ReportBase
             sheet.addCell(label);
 
             header = String.format(res.getString(R.string.rep_maintenance_period),
-                    AndroidContext.dateFormat.format(from), AndroidContext.dateFormat.format(to));
+                    AndroidContext.repDateFormat.format(from), AndroidContext.repDateFormat.format(to));
             label = new Label(0, 1, header, new WritableCellFormat(new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD)));
             sheet.addCell(label);
             sheet.mergeCells(0, 0, 8, 0);
@@ -102,6 +105,9 @@ public class MaintenanceReport extends ReportBase
                     new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD), NumberFormats.INTEGER);
             tableFormatIntB.setBorder(Border.ALL, BorderLineStyle.THIN);
 
+            WritableCellFormat tableFormatIntBI = new WritableCellFormat(
+                    new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD), NumberFormats.INTEGER);
+            tableFormatIntBI.setBorder(Border.ALL, BorderLineStyle.MEDIUM);
 
             List<ReplGoodsView> replRaw =
                     ReplenishmentFactory.instance.getReplenishmentsForMachine(machine.id,
@@ -159,8 +165,20 @@ public class MaintenanceReport extends ReportBase
             }
 
 
+            if(maxRow < 4) maxRow = 4;
+            else
+            {
+                int sumTotal = 0;
+                for(Integer value : sumQMap.values())
+                {
+                    sumTotal += value;
+                }
+                sheet.addCell(new Number(maxCol, ++maxRow, sumTotal, tableFormatIntBI));
+                maxRow++;
+            }
+
             //Accounting part of the report
-            List<Accounting> accountings = AccountingFactory.instance.getAccountingListByDates(machine.id, from, to);
+            List<Accounting> accountings = getAccounting(from, to);
 
             groupRawAcc(accountings);
 
@@ -195,6 +213,20 @@ public class MaintenanceReport extends ReportBase
                 sheet.addCell(new Number(col + 2, maxRow + 3, entry.getValue().getMoneyQty(), tableFormatInt));
             }
 
+            if(accountings.size()>1)
+            {
+                sheet.addCell(new Label(2 + usedDatesSort.size(), maxRow, res.getString(R.string.rep_accounting_inc), capFormat));
+
+                Accounting one = accountings.get(0);
+                Accounting two = accountings.get(1);
+
+                int col = accountings.size();
+
+                sheet.addCell(new Number(col + 2, maxRow + 1, Math.abs(one.getOtherQty() - two.getOtherQty()), tableFormatInt));
+                sheet.addCell(new Number(col + 2, maxRow + 2, Math.abs(one.getCoinsQty() - two.getCoinsQty()), tableFormatInt));
+                sheet.addCell(new Number(col + 2, maxRow + 3, Math.abs(one.getMoneyQty() - two.getMoneyQty()), tableFormatInt));
+            }
+
             workbook.write();
             workbook.close();
 
@@ -213,13 +245,42 @@ public class MaintenanceReport extends ReportBase
         return this;
     }
 
+    List<Accounting> getAccounting(Date from, Date to)
+    {
+        org.joda.time.DateTime dt = new DateTime(from);
+
+        List<Accounting> ret = new ArrayList<Accounting>();
+
+        List<Accounting> list = AccountingFactory.instance.getAccountingListByDates(
+                machine.id, dt.minusMonths(2).toDate(), dt.plusDays(1).toDate());
+
+        if(!list.isEmpty())
+        {
+            ret.add(list.get(list.size()-1));
+        }
+
+        list = AccountingFactory.instance.getAccountingListByDates(
+                machine.id, from, to);
+
+        if(!list.isEmpty())
+        {
+            if(ret.isEmpty() && list.size()>1)
+            {
+                ret.add(list.get(0));
+            }
+            ret.add(list.get(list.size()-1));
+        }
+
+        return ret;
+    }
+
     Map<String, Accounting> usedAccountings = new HashMap<String, Accounting>();
 
     private void groupRawAcc(List<Accounting> rawList)
     {
         for(Accounting accounting : rawList)
         {
-            String dateS = AndroidContext.dateFormat.format(accounting.createdDate);
+            String dateS = AndroidContext.repDateFormat.format(accounting.createdDate);
             if(usedAccountings.containsKey(dateS)) continue;
 
             usedAccountings.put(dateS, accounting);
@@ -239,7 +300,7 @@ public class MaintenanceReport extends ReportBase
         usedDatesSort.clear();
         for(int i=0;i<dates.size();i++)
         {
-            usedDatesSort.put(AndroidContext.dateFormat.format(dates.get(i).createdDate), i);
+            usedDatesSort.put(AndroidContext.repDateFormat.format(dates.get(i).createdDate), i);
         }
 
     }
@@ -282,7 +343,7 @@ public class MaintenanceReport extends ReportBase
 
         for(int i=0;i<dates.size();i++)
         {
-            usedDatesSort.put(AndroidContext.dateFormat.format(dates.get(i)), i);
+            usedDatesSort.put(AndroidContext.repDateFormat.format(dates.get(i)), i);
         }
     }
 }

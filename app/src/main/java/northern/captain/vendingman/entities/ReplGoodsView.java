@@ -20,7 +20,7 @@ public class ReplGoodsView
 
     public void init()
     {
-        startDateS = AndroidContext.dateFormat.format(startDate);
+        startDateS = AndroidContext.repDateFormat.format(startDate);
     }
 
     public String getKey()

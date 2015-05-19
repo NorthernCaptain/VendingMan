@@ -133,4 +133,5 @@
     <string name="rep_accounting_count_coins">Count coins</string>
     <string name="rep_accounting_count_banknotes">Count banknotes</string>
     <string name="rep_accounting_what">Accouning type</string>
+    <string name="rep_accounting_inc">Increase</string>
 </resources>
