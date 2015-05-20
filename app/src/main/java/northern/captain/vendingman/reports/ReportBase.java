@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,4 +57,10 @@ public abstract class ReportBase
     }
 
     public abstract ReportBase build();
+
+    public Date startOfDay(Date date)
+    {
+        DateTime dateTime = new DateTime(date).withTime(0, 0, 0, 0);
+        return dateTime.toDate();
+    }
 }

@@ -163,13 +163,6 @@ public class MainActivity extends ActionBarActivity
             openSettings();
             return true;
         }
-
-        if (id == R.id.action_example)
-        {
-            doSync();
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

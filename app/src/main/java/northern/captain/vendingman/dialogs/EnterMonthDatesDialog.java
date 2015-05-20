@@ -71,7 +71,9 @@ public class EnterMonthDatesDialog extends DialogFragment
         }
 
         transactionFromDate.setDate(getStartMonth(DateTime.now(), 0));
+        transactionFromDate.setTime(0, 0, 0, 0);
         transactionToDate.setDate(getStartMonth(DateTime.now(), 1));
+        transactionToDate.setTime(0, 0, 0, 0);
 
         Resources res = getResources();
 

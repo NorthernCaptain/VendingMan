@@ -118,5 +118,5 @@
     <string name="rep_accounting_count_coins">Счетчик монет</string>
     <string name="rep_accounting_count_banknotes">Счетчик банкнот</string>
     <string name="rep_accounting_what">Тип счетчика</string>
-    <string name="rep_accounting_inc">Прирост</string>
+    <string name="rep_accounting_inc">Оборот</string>
 </resources>

@@ -247,12 +247,13 @@ public class MaintenanceReport extends ReportBase
 
     List<Accounting> getAccounting(Date from, Date to)
     {
-        org.joda.time.DateTime dt = new DateTime(from);
+        org.joda.time.DateTime dateFrom = new DateTime(from).withTime(0, 0, 0, 0);
+        org.joda.time.DateTime dateTo = new DateTime(to).withTime(0, 0, 0, 0);
 
         List<Accounting> ret = new ArrayList<Accounting>();
 
         List<Accounting> list = AccountingFactory.instance.getAccountingListByDates(
-                machine.id, dt.minusMonths(2).toDate(), dt.plusDays(1).toDate());
+                machine.id, dateFrom.minusMonths(2).toDate(), dateFrom.plusDays(2).toDate());
 
         if(!list.isEmpty())
         {
@@ -260,7 +261,7 @@ public class MaintenanceReport extends ReportBase
         }
 
         list = AccountingFactory.instance.getAccountingListByDates(
-                machine.id, from, to);
+                machine.id, dateFrom.plusDays(2).toDate(), dateTo.plusDays(15).toDate());
 
         if(!list.isEmpty())
         {
