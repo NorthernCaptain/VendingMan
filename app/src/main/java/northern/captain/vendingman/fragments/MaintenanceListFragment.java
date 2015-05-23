@@ -67,50 +67,64 @@ public class MaintenanceListFragment extends BaseFragment
     @AfterViews
     void initViews()
     {
-        listView.setHasFixedSize(true);
-        items = MaintenanceFactory.instance.getMaintenanceList(machine.id);
-        final Drawable divider = getResources().getDrawable(R.drawable.divider1);
-        listView.addItemDecoration(new DividerItemDecoration(divider));
-
-        adapter = new TheListAdapter();
-        listView.setAdapter(adapter);
-        listView.setOnTouchListener(new SwipeDismissRecyclerViewTouchListener(listView, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks()
+        if(machine != null)
         {
-            @Override
-            public boolean canDismiss(int position)
-            {
-                Maintenance item = items.get(position);
-                return item.state == 1;
-            }
 
-            @Override
-            public void onDismiss(RecyclerView recyclerView, List<SwipeDismissRecyclerViewTouchListener.PendingDismissData> pendingDismissData)
-            {
-            }
+            listView.setHasFixedSize(true);
+            items = MaintenanceFactory.instance.getMaintenanceList(machine.id);
+            final Drawable divider = getResources().getDrawable(R.drawable.divider1);
+            listView.addItemDecoration(new DividerItemDecoration(divider));
 
-            @Override
-            public boolean showUndo(SwipeDismissRecyclerViewTouchListener.PendingDismissData pendingDismissData)
+            adapter = new TheListAdapter();
+            listView.setAdapter(adapter);
+            listView.setOnTouchListener(new SwipeDismissRecyclerViewTouchListener(listView, new SwipeDismissRecyclerViewTouchListener.DismissCallbacks()
             {
-                adapter.showUndo(pendingDismissData.position, pendingDismissData.view);
-                return true;
-            }
-        }));
-
-        ItemClickSupport itemClicker = ItemClickSupport.addTo(listView);
-        itemClicker.setOnItemClickListener(new ItemClickSupport.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(RecyclerView recyclerView, View view, int pos, long l)
-            {
-                if(callback != null)
+                @Override
+                public boolean canDismiss(int position)
                 {
-                    callback.itemChosen(items.get(pos));
-                } else
-                {
-                    doClick(items.get(pos), pos);
+                    Maintenance item = items.get(position);
+                    return item.state == 1;
                 }
-            }
-        });
+
+                @Override
+                public void onDismiss(RecyclerView recyclerView, List<SwipeDismissRecyclerViewTouchListener.PendingDismissData> pendingDismissData)
+                {
+                }
+
+                @Override
+                public boolean showUndo(SwipeDismissRecyclerViewTouchListener.PendingDismissData pendingDismissData)
+                {
+                    adapter.showUndo(pendingDismissData.position, pendingDismissData.view);
+                    return true;
+                }
+            }));
+
+            ItemClickSupport itemClicker = ItemClickSupport.addTo(listView);
+            itemClicker.setOnItemClickListener(new ItemClickSupport.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(RecyclerView recyclerView, View view, int pos, long l)
+                {
+                    if (callback != null)
+                    {
+                        callback.itemChosen(items.get(pos));
+                    } else
+                    {
+                        doClick(items.get(pos), pos);
+                    }
+                }
+            });
+        } else
+        {
+            AndroidContext.mainActivity.mainHandler.post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    AndroidContext.mainActivity.onNavigationDrawerItemSelected(FragmentFactory.FRAG_MAINTENANCE_LIST - 1);
+                }
+            });
+        }
     }
 
     private class TheListAdapter extends RecyclerView.Adapter<TheListAdapter.ViewHolder>
