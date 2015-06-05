@@ -257,7 +257,7 @@ public class MaintenanceReport extends ReportBase
 
         if(!list.isEmpty())
         {
-            ret.add(list.get(list.size()-1));
+            ret.add(list.get(0));
         }
 
         list = AccountingFactory.instance.getAccountingListByDates(
